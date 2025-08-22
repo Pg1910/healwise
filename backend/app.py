@@ -41,6 +41,9 @@ def analyze(user_input: UserInput):
             "suggested_next_steps": [],
             "helpful_resources": []
         }
+    # keep a short memory (last 3 turns)
+    if not hasattr(analyze, "history"):
+        analyze.history = []
 
     # 1. Get probabilities from classifier
     probs = score_probs(user_text)
@@ -49,16 +52,18 @@ def analyze(user_input: UserInput):
     risk = assess_crisis_signals(user_text, probs)
 
     # 3. Empathy tag
-    tag = (
-        "suicide_high"
-        if risk in (Risk.HIGH, Risk.CRISIS) and probs.get("suicide_prob", 0) > 0.5
-        else "anxiety_high"
-        if probs.get("anxiety_prob", 0) > 0.6
-        else "depression_high"
-    )
+    if risk in (Risk.HIGH, Risk.CRISIS) and probs.get("suicide_prob", 0) > 0.5:
+        tag = "suicide_high"
+    elif probs.get("anxiety_prob", 0) > 0.6:
+        tag = "anxiety_high"
+    elif probs.get("depression_prob", 0) > 0.6:
+        tag = "depression_high"
+    else:
+        tag = "neutral"
+
 
     # 4. Generate supportive message
-    msg = empathize(tag)
+    msg = empathize(tag, analyze.history)
     msg = de_stigmatize(msg)
 
     # 5. Suggested actions
@@ -74,6 +79,12 @@ def analyze(user_input: UserInput):
         suggested_next_steps=actions,
         helpful_resources=resources,
     )
+    # update conversation history
+    analyze.history.append(user_text)
+    if len(analyze.history) > 3:
+        analyze.history.pop(0)
+        
+        
 @app.get("/health")
 def health():
     return {"status": "ok", "message": "HealWise backend running"}

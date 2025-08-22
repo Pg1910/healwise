@@ -1,27 +1,38 @@
-from textwrap import dedent 
+import random
 
-NURSE_TEMPLATES = {
-    "depression_high": dedent("""\
-        I hear how heavy this feels. It makes sense you’re exhausted by it.
-        You’re not alone in feeling this way, and it’s valid to say it’s hard.
-        Here’s a small next step that’s helped others: {micro_step}.
-        If you’re open, I can also guide a grounding exercise or connect you to support."""),
-    "anxiety_high": dedent("""\
-        Your body sounds stuck in alert mode—totally understandable given what you’re facing.
-        You did the right thing by talking about it. One quick tool: {micro_step}.
-        If anxiety spikes past what feels safe, I can help you reach real-time support."""),
-    "suicide_high": dedent("""\
-        Thank you for telling me. Your safety matters.
-        I want to help you stay safe right now. We can walk through a brief safety plan together,
-        and I can connect you with urgent support in your area.""")
-    
+RESPONSES = {
+    "suicide_high": [
+        "I hear the pain in your words. You're not alone—it's okay to reach out for help.",
+        "That sounds really heavy. I'm here with you, and I want you to know support exists.",
+        "I can sense how overwhelming this feels. Sharing it takes courage—you’re not alone."
+    ],
+    "anxiety_high": [
+        "It sounds like your mind is racing. Let's take a breath together—you’re safe here.",
+        "I can sense the worry in your words. You're doing your best in a hard moment.",
+        "Feeling anxious is really tough. Thank you for sharing it—you’re not facing it alone."
+    ],
+    "depression_high": [
+        "I hear how low you're feeling. Even in this darkness, reaching out is a strong step.",
+        "It sounds like things feel really heavy. You're not alone—I’m here with you.",
+        "That sadness must be hard to carry. I want you to know your feelings are valid."
+    ],
+    "neutral": [
+    "I’m glad to hear that. It's important to notice the good moments.",
+    "That’s great—thanks for sharing something positive with me.",
+    "I can sense you’re in a lighter mood. That’s wonderful!"
+    ]
+
 }
-MICRO_STEPS = {
-    "breathing": "try a 4-6 breathing cycle (inhale 4, exhale 6) for 2 minutes",
-    "grounding": "name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste",
-    "reach_out": "message someone you trust one concrete sentence about how you feel"
-}
-def empathize(tag: str) -> str:
-    micro = MICRO_STEPS["grounding" if "anxiety" in tag else "breathing"]
-    base = NURSE_TEMPLATES.get(tag, NURSE_TEMPLATES["depression_high"])
-    return base.format(micro_step=micro)
+
+def empathize(tag: str, conversation_history: list[str] = None) -> str:
+    """
+    Return a varied empathetic response based on tag and optional history.
+    """
+    options = RESPONSES.get(tag, RESPONSES["neutral"])
+    response = random.choice(options)
+
+    # Optional: lightly adapt based on recent conversation
+    if conversation_history and "alone" in conversation_history[-1].lower():
+        response += " I want to reassure you—you’re not alone in this."
+
+    return response
