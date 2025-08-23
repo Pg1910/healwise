@@ -3,13 +3,19 @@ from pathlib import Path
 
 KB = {p.stem: Path("kb")/p for p in os.scandir("kb") if p.is_file() and p.name.endswith(".md")}
 
-def retrieve (query :str ,k=2):
+def retrieve(query: str, k=2):
+    """Retrieve relevant documents based on keyword overlap"""
     scores = []
-    q = set(re.findall(r"\w+",query.lower()))
-    for name , path in KB.items():
-        text = path.read_text(encoding = "utf-8").lower()
-        tset = set(re.findall(r"\w+",text))
-        scores.append((len(q & tset),name))
+    q = set(re.findall(r"\w+", query.lower()))
+    for name, path in KB.items():
+        text = path.read_text(encoding="utf-8").lower()
+        tset = set(re.findall(r"\w+", text))
+        scores.append((len(q & tset), name))
         
-    scores.sort(reverse = True )
-    return [KB[n].read_text(encoding = "utf-8") for _,n in scores [:k]]
+    scores.sort(reverse=True)
+    return [KB[n].read_text(encoding="utf-8") for _, n in scores[:k]]
+
+# Keep the old function name for backwards compatibility
+def retrieve_documents(query: str, k=2):
+    """Alias for retrieve function"""
+    return retrieve(query, k)

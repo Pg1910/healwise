@@ -1,4 +1,9 @@
+fastapi
+uvicorn
 streamlit 
 transformers
 torch
 huggingface_hub
+pydantic
+python-multipart
+requests

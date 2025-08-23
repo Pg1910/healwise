@@ -1,17 +1,127 @@
 import React, { useState, useEffect } from "react";
+import AuthScreen from "./components/AuthScreen";
+import OnboardingFlow from "./components/OnboardingFlow";
+import TherapyProgressChart from "./components/TherapyProgressChart";
+import GameCenter from "./components/GameCenter";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [conversations, setConversations] = useState({});
   const [activeConvId, setActiveConvId] = useState(null);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
+  const [showGames, setShowGames] = useState(false);
+  const [progressData, setProgressData] = useState([]);
 
-  // Initialize with a default conversation
+  // Load user data from localStorage on mount
   useEffect(() => {
-    const defaultId = "default";
-    setConversations({ [defaultId]: { messages: [], createdAt: new Date().toISOString() } });
-    setActiveConvId(defaultId);
+    const savedAuth = localStorage.getItem('healwise_auth');
+    const savedProfile = localStorage.getItem('healwise_profile');
+    const savedConversations = localStorage.getItem('healwise_conversations');
+    const savedDarkMode = localStorage.getItem('healwise_darkMode');
+    const savedProgress = localStorage.getItem('healwise_progress');
+
+    if (savedAuth) {
+      setIsAuthenticated(true);
+      if (savedProfile) {
+        setUserProfile(JSON.parse(savedProfile));
+      } else {
+        setShowOnboarding(true);
+      }
+      if (savedConversations) {
+        setConversations(JSON.parse(savedConversations));
+      }
+      if (savedProgress) {
+        setProgressData(JSON.parse(savedProgress));
+      }
+    }
+    
+    if (savedDarkMode) {
+      setDarkMode(JSON.parse(savedDarkMode));
+    }
   }, []);
+
+  // Save conversations and progress to localStorage
+  useEffect(() => {
+    if (isAuthenticated) {
+      localStorage.setItem('healwise_conversations', JSON.stringify(conversations));
+      localStorage.setItem('healwise_progress', JSON.stringify(progressData));
+    }
+  }, [conversations, progressData, isAuthenticated]);
+
+  useEffect(() => {
+    localStorage.setItem('healwise_darkMode', JSON.stringify(darkMode));
+  }, [darkMode]);
+
+  const handleAuth = (userData) => {
+    setIsAuthenticated(true);
+    localStorage.setItem('healwise_auth', JSON.stringify(userData));
+    setShowOnboarding(true);
+  };
+
+  const handleOnboardingComplete = (profile) => {
+    setUserProfile(profile);
+    setShowOnboarding(false);
+    localStorage.setItem('healwise_profile', JSON.stringify(profile));
+    
+    // Create initial conversation
+    const defaultId = "welcome_chat";
+    const welcomeConv = {
+      messages: [{
+        from: "bot",
+        text: getPersonalizedWelcome(profile),
+        timestamp: new Date().toISOString()
+      }],
+      createdAt: new Date().toISOString()
+    };
+    setConversations({ [defaultId]: welcomeConv });
+    setActiveConvId(defaultId);
+  };
+
+  const getPersonalizedWelcome = (profile) => {
+    const { personality, botPersona, interests } = profile;
+    const personaGreetings = {
+      friend: "Hey there! 🌟 I'm so glad you're here.",
+      sibling: "Heyyyy! Your digital sibling is here for you! 💫",
+      parent: "Hello sweetheart, I'm here to support you always. 🤗",
+      mentor: "Welcome! I'm here to guide and support your journey. 🌱"
+    };
+    
+    return `${personaGreetings[botPersona] || personaGreetings.friend} I can see you're interested in ${interests.slice(0, 2).join(' and ')}, and I love that about you! Think of me as your personal mental wellness companion - I'm here whenever you need to talk, reflect, or just share what's on your mind. What's going well for you today?`;
+  };
+
+  if (!isAuthenticated) {
+    return <AuthScreen onAuth={handleAuth} darkMode={darkMode} setDarkMode={setDarkMode} />;
+  }
+
+  if (showOnboarding) {
+    return <OnboardingFlow onComplete={handleOnboardingComplete} darkMode={darkMode} />;
+  }
+
+  if (showProgress) {
+    return (
+      <TherapyProgressChart 
+        progressData={progressData}
+        onBack={() => setShowProgress(false)}
+        darkMode={darkMode}
+      />
+    );
+  }
+
+  if (showGames) {
+    return (
+      <GameCenter 
+        onBack={() => setShowGames(false)}
+        darkMode={darkMode}
+        userProfile={userProfile}
+      />
+    );
+  }
 
   const currentMessages = activeConvId ? conversations[activeConvId]?.messages || [] : [];
 
@@ -24,13 +134,29 @@ function App() {
     setActiveConvId(newId);
   };
 
+  const updateProgressData = (emotionScores, riskLevel) => {
+    const today = new Date().toISOString().split('T')[0];
+    const newEntry = {
+      date: today,
+      mood: emotionScores.joy || 0,
+      anxiety: emotionScores.fear || emotionScores.nervousness || 0,
+      depression: emotionScores.sadness || emotionScores.disappointment || 0,
+      overall: Object.values(emotionScores).reduce((sum, val) => sum + val, 0) / Object.keys(emotionScores).length,
+      riskLevel: riskLevel
+    };
+
+    setProgressData(prev => {
+      const filtered = prev.filter(entry => entry.date !== today);
+      return [...filtered, newEntry].sort((a, b) => new Date(a.date) - new Date(b.date));
+    });
+  };
+
   const sendMessage = async () => {
     const text = input.trim();
     if (!text || !activeConvId) return;
 
     const userMsg = { from: "user", text, timestamp: new Date().toISOString() };
     
-    // Update current conversation
     setConversations(prev => ({
       ...prev,
       [activeConvId]: {
@@ -43,18 +169,30 @@ function App() {
     setLoading(true);
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/analyze/${activeConvId}`, {
+      const res = await fetch(`http://127.0.0.1:8000/analyze`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "X-User-Profile": JSON.stringify(userProfile)
+        },
         body: JSON.stringify({ text }),
       });
 
       const data = await res.json();
+      
+      // Update progress tracking
+      if (data.probs) {
+        updateProgressData(data.probs, data.risk);
+      }
+
       const botMsg = {
         from: "bot",
         text: data.supportive_message,
         timestamp: new Date().toISOString(),
-        risk: data.risk
+        risk: data.risk,
+        recommendations: data.helpful_resources,
+        nextSteps: data.suggested_next_steps,
+        emotions: data.probs
       };
 
       setConversations(prev => ({
@@ -90,58 +228,125 @@ function App() {
     }
   };
 
+  const baseClasses = darkMode 
+    ? "bg-gray-900 text-gray-100" 
+    : "bg-gradient-to-br from-amber-50 via-orange-50 to-red-50";
+  
+  const sidebarClasses = darkMode
+    ? "bg-gray-800 border-gray-700 shadow-xl"
+    : "bg-gradient-to-b from-amber-100 to-orange-100 border-orange-200 shadow-xl";
+
+  const cardClasses = darkMode
+    ? "bg-gray-700 border-gray-600"
+    : "bg-white border-orange-200";
+
   return (
-    <div className="flex h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className={`flex h-screen ${baseClasses}`}>
       {/* Sidebar */}
-      <div className="w-80 bg-white shadow-xl border-r border-gray-200 flex flex-col">
-        <div className="p-6 border-b border-gray-200">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            HealWise
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">Your mental wellness companion</p>
+      <div className={`${sidebarCollapsed ? 'w-16' : 'w-80'} transition-all duration-300 ${sidebarClasses} border-r flex flex-col`}>
+        <div className="p-6 border-b border-opacity-20">
+          <div className="flex items-center justify-between">
+            {!sidebarCollapsed && (
+              <div>
+                <h1 className={`text-2xl font-bold ${darkMode ? 'text-amber-300' : 'text-amber-800'} font-serif`}>
+                  ✍️ HealWise
+                </h1>
+                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-amber-600'} mt-1 italic`}>
+                  Your personal wellness journal
+                </p>
+              </div>
+            )}
+            <div className="flex flex-col space-y-2">
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-orange-200'} transition-colors`}
+              >
+                {sidebarCollapsed ? '→' : '←'}
+              </button>
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-orange-200'} transition-colors`}
+                title="Toggle dark mode"
+              >
+                {darkMode ? '☀️' : '🌙'}
+              </button>
+            </div>
+          </div>
         </div>
         
-        <div className="p-4">
-          <button
-            onClick={createNewConversation}
-            className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-          >
-            + New Conversation
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4 space-y-2">
-          {Object.entries(conversations).map(([id, conv]) => (
-            <div
-              key={id}
-              onClick={() => setActiveConvId(id)}
-              className={`p-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                activeConvId === id 
-                  ? 'bg-blue-50 border-l-4 border-blue-500 shadow-sm' 
-                  : 'hover:bg-gray-50'
-              }`}
-            >
-              <div className="text-sm font-medium text-gray-800">
-                {conv.messages.length > 0 
-                  ? conv.messages[0].text.substring(0, 30) + '...'
-                  : 'New conversation'
-                }
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
-                {new Date(conv.createdAt).toLocaleDateString()}
-              </div>
+        {!sidebarCollapsed && (
+          <>
+            <div className="p-4 space-y-2">
+              <button
+                onClick={createNewConversation}
+                className={`w-full ${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700' : 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'} text-white py-3 px-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5`}
+              >
+                📝 New Journal Entry
+              </button>
+              
+              <button
+                onClick={() => setShowProgress(true)}
+                className={`w-full ${cardClasses} py-2 px-4 rounded-xl font-medium transition-all duration-200 hover:shadow-md`}
+              >
+                📊 Progress Charts
+              </button>
+              
+              <button
+                onClick={() => setShowGames(true)}
+                className={`w-full ${cardClasses} py-2 px-4 rounded-xl font-medium transition-all duration-200 hover:shadow-md`}
+              >
+                🎮 Mind Games
+              </button>
             </div>
-          ))}
-        </div>
+
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+              {Object.entries(conversations).map(([id, conv]) => (
+                <div
+                  key={id}
+                  onClick={() => setActiveConvId(id)}
+                  className={`p-3 rounded-lg cursor-pointer transition-all duration-200 ${
+                    activeConvId === id 
+                      ? `${darkMode ? 'bg-gray-700 border-l-4 border-amber-500' : 'bg-orange-50 border-l-4 border-orange-500'} shadow-sm` 
+                      : `${darkMode ? 'hover:bg-gray-700' : 'hover:bg-orange-50'}`
+                  }`}
+                >
+                  <div className={`text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                    {conv.messages.length > 0 
+                      ? conv.messages[0].text.substring(0, 30) + '...'
+                      : 'New conversation'
+                    }
+                  </div>
+                  <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'} mt-1`}>
+                    {new Date(conv.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
-        {/* Chat Header */}
-        <div className="bg-white shadow-sm border-b border-gray-200 p-4">
-          <h2 className="text-lg font-semibold text-gray-800">
-            {activeConvId ? `Chat ${activeConvId.replace('conv_', '').substring(0, 8)}` : 'Select a conversation'}
-          </h2>
+        {/* Enhanced Chat Header */}
+        <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-orange-200'} shadow-sm border-b p-4`}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className={`text-xl font-bold ${darkMode ? 'text-amber-300' : 'text-amber-800'} font-serif`}>
+                📖 Personal Wellness Journal
+              </h2>
+              {userProfile && (
+                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-amber-600'} italic`}>
+                  Speaking with your {userProfile.botPersona} • {userProfile.personality} mode
+                </p>
+              )}
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className={`px-3 py-1 ${darkMode ? 'bg-green-800 text-green-200' : 'bg-green-100 text-green-800'} rounded-full text-xs font-medium`}>
+                🔒 Local & Private
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Messages */}
@@ -154,30 +359,31 @@ function App() {
               }`}
             >
               {msg.from === "bot" && (
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                  🧠
+                <div className={`w-8 h-8 ${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} rounded-full flex items-center justify-center text-white text-sm font-medium`}>
+                  ✍️
                 </div>
               )}
               <div
                 className={`max-w-md px-4 py-3 rounded-2xl shadow-sm ${
                   msg.from === "user"
-                    ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-br-md"
-                    : "bg-white text-gray-800 rounded-bl-md border border-gray-200"
+                    ? `${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-br-md`
+                    : `${darkMode ? 'bg-gray-700 text-gray-100 border-gray-600' : 'bg-white text-gray-800 border-orange-200'} rounded-bl-md border`
                 }`}
               >
-                <p className="text-sm leading-relaxed">{msg.text}</p>
-                {msg.risk && msg.risk !== 'SAFE' && (
-                  <div className={`mt-2 px-2 py-1 rounded-full text-xs font-medium inline-block ${
-                    msg.risk === 'HIGH' || msg.risk === 'CRISIS' 
-                      ? 'bg-red-100 text-red-700'
-                      : 'bg-yellow-100 text-yellow-700'
-                  }`}>
-                    {msg.risk.toLowerCase()} risk
+                <p className="text-sm leading-relaxed font-serif">{msg.text}</p>
+                {msg.recommendations && msg.recommendations.length > 0 && (
+                  <div className={`mt-3 p-2 ${darkMode ? 'bg-blue-900 bg-opacity-50' : 'bg-blue-50'} rounded-lg`}>
+                    <p className={`text-xs font-medium ${darkMode ? 'text-blue-200' : 'text-blue-800'} mb-1`}>💡 Gentle suggestions:</p>
+                    <ul className={`text-xs ${darkMode ? 'text-blue-300' : 'text-blue-700'} space-y-1`}>
+                      {msg.recommendations.map((rec, idx) => (
+                        <li key={idx}>• {rec}</li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>
               {msg.from === "user" && (
-                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 text-sm">
+                <div className={`w-8 h-8 ${darkMode ? 'bg-gray-600' : 'bg-gray-300'} rounded-full flex items-center justify-center ${darkMode ? 'text-gray-300' : 'text-gray-600'} text-sm`}>
                   👤
                 </div>
               )}
@@ -186,16 +392,16 @@ function App() {
           
           {loading && (
             <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                🧠
+              <div className={`w-8 h-8 ${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} rounded-full flex items-center justify-center text-white text-sm font-medium`}>
+                ✍️
               </div>
-              <div className="bg-white text-gray-800 rounded-2xl rounded-bl-md border border-gray-200 px-4 py-3 shadow-sm">
+              <div className={`${darkMode ? 'bg-gray-700 text-gray-100 border-gray-600' : 'bg-white text-gray-800 border-orange-200'} rounded-2xl rounded-bl-md border px-4 py-3 shadow-sm`}>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-500">HealWise is thinking</span>
+                  <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} italic`}>HealWise is reflecting...</span>
                   <div className="typing-dots flex space-x-1">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className={`w-2 h-2 ${darkMode ? 'bg-amber-500' : 'bg-orange-500'} rounded-full animate-bounce`}></div>
+                    <div className={`w-2 h-2 ${darkMode ? 'bg-amber-500' : 'bg-orange-500'} rounded-full animate-bounce`} style={{animationDelay: '0.1s'}}></div>
+                    <div className={`w-2 h-2 ${darkMode ? 'bg-amber-500' : 'bg-orange-500'} rounded-full animate-bounce`} style={{animationDelay: '0.2s'}}></div>
                   </div>
                 </div>
               </div>
@@ -203,24 +409,24 @@ function App() {
           )}
         </div>
 
-        {/* Input Area */}
-        <div className="bg-white border-t border-gray-200 p-4">
+        {/* Enhanced Input Area */}
+        <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-orange-200'} border-t p-4`}>
           <div className="flex space-x-3">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Share how you're feeling..."
-              className="flex-1 resize-none border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-              rows="1"
+              placeholder="What's weighing on your mind today? Share your thoughts, feelings, or experiences... 📝"
+              className={`flex-1 resize-none border ${darkMode ? 'border-gray-600 bg-gray-700 text-gray-100 focus:ring-amber-500' : 'border-orange-300 bg-white text-gray-800 focus:ring-orange-500'} rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-200 font-serif`}
+              rows="2"
               disabled={loading}
             />
             <button
               onClick={sendMessage}
               disabled={loading || !input.trim()}
-              className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className={`${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700' : 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'} text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
             >
-              {loading ? "..." : "Send"}
+              {loading ? "..." : "Share"}
             </button>
           </div>
         </div>
