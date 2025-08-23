@@ -12,14 +12,16 @@ from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import json
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 # Import from repo root paths
-from backend.models.mental_classifier import score_probs
+from models.mental_classifier import score_probs
+from models.pattern_analyzer import analyze_conversation_patterns
 from safety.assessor import assess_crisis_signals
 from safety.ladder import ACTIONS
 from safety.bias import de_stigmatize
 from kb.retriever import retrieve
+from safety.early_warning import generate_early_warnings
 
 app = FastAPI(title="HealWise API")
 
@@ -235,6 +237,33 @@ async def analyze_text(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+@app.post("/analyze-patterns")
+async def analyze_patterns(
+    conversations: List[Dict],
+    x_user_profile: Optional[str] = Header(None)
+):
+    try:
+        user_profile = None
+        if x_user_profile:
+            try:
+                user_profile = json.loads(x_user_profile)
+            except json.JSONDecodeError:
+                pass
+        
+        # Server-side pattern analysis for validation
+        patterns = analyze_conversation_patterns(conversations)
+        warnings = generate_early_warnings(patterns, user_profile)
+        
+        return {
+            "patterns": patterns,
+            "early_warnings": warnings,
+            "confidence": min(1.0, len(conversations) / 10),
+            "recommendations": get_personalized_recommendations(patterns, user_profile)
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Pattern analysis failed: {str(e)}")
 
 @app.get("/health")
 async def health_check():
