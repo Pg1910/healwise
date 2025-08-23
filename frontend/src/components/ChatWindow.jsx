@@ -1,45 +1,50 @@
-// frontend/src/components/ChatWindow.jsx
-import { useState, useRef, useEffect } from "react";
-import { analyzeText } from "../services/api";
+import { useState } from "react";
+import MessageBubble from "./MessageBubble";
 
-function ChatWindow() {
-  const [messages, setMessages] = useState([
-    { sender: "bot", text: "👋 Hi, I’m HealWise. How are you feeling today?" },
-  ]);
+export default function ChatWindow() {
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Ref for auto-scroll
-  const messagesEndRef = useRef(null);
+  const sendMessage = async () => {
+    const text = input.trim();
+    if (!text) return;
 
-  // Scroll into view when messages change
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages, loading]);
-
-  const handleSend = async () => {
-    if (!input.trim()) return;
-
-    const userMsg = { sender: "user", text: input };
-    setMessages((prev) => [...prev, userMsg]);
+    // Add user message immediately
+    setMessages((prev) => [...prev, { sender: "user", text }]);
     setInput("");
     setLoading(true);
 
     try {
-      const res = await analyzeText(userMsg.text);
+      const res = await fetch("http://127.0.0.1:8000/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
 
-      const botMsg = {
-        sender: "bot",
-        text: res.supportive_message || "I'm here for you.",
-      };
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Backend error: ${res.status} - ${errorText}`);
+      }
 
-      setMessages((prev) => [...prev, botMsg]);
+      const data = await res.json();
+
+      // Compose bot response with details inline
+      let botText = data.supportive_message ?? "";
+      if (data?.risk) botText += `\n\nRisk: ${data.risk}`;
+      if (Array.isArray(data?.suggested_next_steps) && data.suggested_next_steps.length) {
+        botText += `\n\nNext steps:\n- ${data.suggested_next_steps.join("\n- ")}`;
+      }
+      if (Array.isArray(data?.helpful_resources) && data.helpful_resources.length) {
+        botText += `\n\nResources:\n- ${data.helpful_resources.join("\n- ")}`;
+      }
+
+      setMessages((prev) => [...prev, { sender: "bot", text: botText }]);
     } catch (err) {
+      console.error("Error fetching:", err);
       setMessages((prev) => [
         ...prev,
-        { sender: "bot", text: "⚠️ Sorry, I couldn’t connect right now." },
+        { sender: "bot", text: "⚠️ Could not connect to HealWise backend." },
       ]);
     } finally {
       setLoading(false);
@@ -47,71 +52,40 @@ function ChatWindow() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      {/* Chat Header */}
-      <div className="p-4 bg-indigo-600 text-white font-bold text-lg shadow">
-        HealWise Chat
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`flex ${
-              msg.sender === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`px-4 py-2 rounded-2xl shadow max-w-xs ${
-                msg.sender === "user"
-                  ? "bg-indigo-500 text-white rounded-br-none"
-                  : "bg-gray-200 text-gray-800 rounded-bl-none"
-              }`}
-            >
-              {msg.text}
-            </div>
-          </div>
+    <div className="flex flex-col h-screen bg-white">
+      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+        {messages.map((msg, i) => (
+          <MessageBubble key={i} sender={msg.sender} text={msg.text} />
         ))}
-
-        {/* Typing indicator */}
         {loading && (
-          <div className="flex justify-start">
-            <div className="bg-gray-200 text-gray-600 px-4 py-2 rounded-2xl rounded-bl-none shadow flex items-center space-x-1">
-              <span>HealWise is typing</span>
-              <span className="flex space-x-1">
-                <span className="w-1 h-1 bg-gray-500 rounded-full animate-bounce"></span>
-                <span className="w-1 h-1 bg-gray-500 rounded-full animate-bounce delay-150"></span>
-                <span className="w-1 h-1 bg-gray-500 rounded-full animate-bounce delay-300"></span>
-              </span>
-            </div>
+          <div className="flex items-center space-x-2 p-2 text-gray-500 italic">
+            <span>HealWise is typing</span>
+            <span className="typing-dots">
+              <span>.</span>
+              <span>.</span>
+              <span>.</span>
+            </span>
           </div>
         )}
-
-        {/* Auto-scroll anchor */}
-        <div ref={messagesEndRef} />
       </div>
-
-      {/* Input Box */}
-      <div className="p-3 border-t flex space-x-2">
+      <div className="p-4 flex gap-2 border-t bg-gray-50">
         <input
           type="text"
-          className="flex-1 border rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder="Type how you're feeling..."
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          placeholder="Type how you feel..."
+          className="flex-1 px-3 py-2 rounded-lg border focus:outline-none"
+          disabled={loading}
         />
         <button
-          onClick={handleSend}
+          onClick={sendMessage}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 disabled:opacity-60"
           disabled={loading}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-xl shadow hover:bg-indigo-700 disabled:opacity-50"
         >
-          Send
+          {loading ? "Sending..." : "Send"}
         </button>
       </div>
     </div>
   );
 }
-
-export default ChatWindow;
