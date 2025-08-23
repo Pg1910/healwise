@@ -3,6 +3,8 @@ import AuthScreen from "./components/AuthScreen";
 import OnboardingFlow from "./components/OnboardingFlow";
 import TherapyProgressChart from "./components/TherapyProgressChart";
 import GameCenter from "./components/GameCenter";
+import EarlyWarningDashboard from './components/EarlyWarningDashboard';
+import TestingDashboard from './components/TestingDashboard';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -16,6 +18,8 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [showGames, setShowGames] = useState(false);
+  const [showEarlyWarning, setShowEarlyWarning] = useState(false);
+  const [showTesting, setShowTesting] = useState(false);
   const [progressData, setProgressData] = useState([]);
 
   // Load user data from localStorage on mount
@@ -119,6 +123,26 @@ function App() {
         onBack={() => setShowGames(false)}
         darkMode={darkMode}
         userProfile={userProfile}
+      />
+    );
+  }
+
+  if (showEarlyWarning) {
+    return (
+      <EarlyWarningDashboard 
+        conversations={conversations}
+        userProfile={userProfile}
+        onBack={() => setShowEarlyWarning(false)}
+        darkMode={darkMode}
+      />
+    );
+  }
+
+  if (showTesting) {
+    return (
+      <TestingDashboard 
+        onBack={() => setShowTesting(false)}
+        darkMode={darkMode}
       />
     );
   }
@@ -297,6 +321,23 @@ function App() {
               >
                 🎮 Mind Games
               </button>
+
+              <button
+                onClick={() => setShowEarlyWarning(true)}
+                className={`w-full ${cardClasses} py-2 px-4 rounded-xl font-medium transition-all duration-200 hover:shadow-md flex items-center space-x-2`}
+              >
+                <span>🔮</span>
+                <span>Wellness Insights</span>
+              </button>
+
+              {process.env.NODE_ENV === 'development' && (
+                <button
+                  onClick={() => setShowTesting(true)}
+                  className={`w-full ${cardClasses} py-2 px-4 rounded-xl font-medium transition-all duration-200 hover:shadow-md border-2 border-dashed border-blue-500`}
+                >
+                  🧪 System Testing
+                </button>
+              )}
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 space-y-2">

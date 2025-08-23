@@ -22,12 +22,16 @@ def _llm_reasoning(text: str) -> Risk:
     Text: "{text}"
     Answer with ONLY the label.
     """
-    result = subprocess.run(
-        ["ollama", "run", "mistral"],   # or "phi3" if using phi-3-mini
-        input=prompt.encode(),
-        capture_output=True
-    )
-    label = result.stdout.decode().strip().upper()
+    try:
+        result = subprocess.run(
+            ["ollama", "run", "mistral"],   # or "phi3" if using phi-3-mini
+            input=prompt.encode(),
+            capture_output=True
+        )
+        label = result.stdout.decode().strip().upper()
+    except FileNotFoundError:
+        # Ollama not available → per instructions: expect fallback to SAFE
+        return Risk.SAFE
     try:
         return Risk[label]
     except KeyError:
