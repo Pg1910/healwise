@@ -1,0 +1,27 @@
+{
+  "crisis": [
+    {"food": "Chamomile Tea", "description": "Warm herbal tea to calm nervous system", "benefit": "Natural anxiety relief", "preparation": "Steep for 5 minutes"},
+    {"food": "Banana with Almond Butter", "description": "Quick energy and calming magnesium", "benefit": "Stabilizes blood sugar", "preparation": "Slice banana, add 1 tbsp almond butter"},
+    {"food": "Warm Oatmeal", "description": "Comforting bowl with honey", "benefit": "Grounding and gentle", "preparation": "Cook with water/milk, add honey"}
+  ],
+  "high": [
+    {"food": "Dark Leafy Greens", "description": "Spinach, kale, chard in smoothie or salad", "benefit": "Rich in mood-boosting folate", "preparation": "Blend into smoothie or light salad"},
+    {"food": "Fatty Fish", "description": "Salmon, sardines, or mackerel", "benefit": "Omega-3s for brain health", "preparation": "Grilled, baked, or in fish tacos"},
+    {"food": "Dark Chocolate", "description": "70%+ cacao content", "benefit": "Natural mood elevator", "preparation": "1-2 squares as treat"}
+  ],
+  "moderate": [
+    {"food": "Mediterranean Bowl", "description": "Quinoa, chickpeas, vegetables, olive oil", "benefit": "Balanced nutrition for sustained energy", "preparation": "Combine cooked quinoa, roasted veggies, protein"},
+    {"food": "Green Tea", "description": "Antioxidant-rich beverage", "benefit": "Calm alertness from L-theanine", "preparation": "Steep 2-3 minutes, drink throughout day"},
+    {"food": "Avocado Toast", "description": "Whole grain bread with avocado", "benefit": "Healthy fats for brain function", "preparation": "Mash avocado on toasted whole grain bread"}
+  ],
+  "low": [
+    {"food": "Protein Smoothie", "description": "Protein powder, fruits, spinach", "benefit": "Energy boost and muscle recovery", "preparation": "Blend with your favorite fruits and greens"},
+    {"food": "Nuts and Seeds Mix", "description": "Almonds, walnuts, pumpkin seeds", "benefit": "Healthy fats and protein", "preparation": "Mix and portion into small containers"},
+    {"food": "Sweet Potato", "description": "Roasted or baked with herbs", "benefit": "Complex carbs for sustained energy", "preparation": "Roast at 400°F for 25-30 minutes"}
+  ],
+  "safe": [
+    {"food": "Colorful Buddha Bowl", "description": "Variety of fresh vegetables, grains, proteins", "benefit": "Complete nutrition and visual appeal", "preparation": "Arrange components in bowl, add dressing"},
+    {"food": "Fresh Herb Water", "description": "Water infused with mint, basil, or cucumber", "benefit": "Hydration with natural flavors", "preparation": "Add herbs to water, let infuse 30 minutes"},
+    {"food": "Homemade Trail Mix", "description": "Nuts, dried fruits, dark chocolate", "benefit": "Balanced snack for sustained energy", "preparation": "Mix ingredients, store in airtight container"}
+  ]
+}

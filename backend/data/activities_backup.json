@@ -1,0 +1,184 @@
+{
+  "crisis": [
+    {
+      "type": "Local Nature",
+      "suggestion": "Visit a nearby park or garden for some fresh air",
+      "benefit": "Grounding in nature helps calm overwhelming emotions",
+      "duration": "15-30 minutes"
+    },
+    {
+      "type": "Crisis Support",
+      "suggestion": "Call a crisis support line (988) or text HOME to 741741",
+      "benefit": "Immediate emotional support from trained professionals",
+      "duration": "As needed"
+    },
+    {
+      "type": "Grounding Exercise",
+      "suggestion": "Try the 5-4-3-2-1 sensory exercise (5 things you see, 4 you feel, 3 you hear, 2 you smell, 1 you taste)",
+      "benefit": "Reduces overwhelming anxiety and brings you to the present moment",
+      "duration": "5-10 minutes"
+    }
+  ],
+  "high": [
+    {
+      "type": "Breathing Practice",
+      "suggestion": "Practice box breathing (inhale 4s, hold 4s, exhale 4s, hold 4s)",
+      "benefit": "Calms the nervous system and reduces stress hormones",
+      "duration": "5-15 minutes"
+    },
+    {
+      "type": "Music Therapy",
+      "suggestion": "Listen to calming instrumental music or nature sounds",
+      "benefit": "Helps regulate emotions and provides comfort",
+      "duration": "20-45 minutes"
+    },
+    {
+      "type": "Gentle Movement",
+      "suggestion": "Try gentle yoga stretches or slow walking",
+      "benefit": "Releases physical tension and improves mood",
+      "duration": "15-30 minutes"
+    }
+  ],
+  "moderate": [
+    {
+      "type": "Creative Expression",
+      "suggestion": "Try journaling, drawing, or any creative activity",
+      "benefit": "Helps process emotions and provides a healthy outlet",
+      "duration": "20-60 minutes"
+    },
+    {
+      "type": "Social Connection",
+      "suggestion": "Call a friend or family member for a chat",
+      "benefit": "Reduces isolation and provides emotional support",
+      "duration": "15-45 minutes"
+    },
+    {
+      "type": "Mindful Activity",
+      "suggestion": "Try cooking, gardening, or organizing a space mindfully",
+      "benefit": "Engages focus and provides sense of accomplishment",
+      "duration": "30-90 minutes"
+    }
+  ],
+  "low": [
+    {
+      "type": "Physical Exercise",
+      "suggestion": "Go for a bike ride, swim, or try a new sport",
+      "benefit": "Boosts endorphins and improves overall well-being",
+      "duration": "30-60 minutes"
+    },
+    {
+      "type": "Learning Adventure",
+      "suggestion": "Take an online course or learn a new skill",
+      "benefit": "Builds confidence and provides sense of progress",
+      "duration": "1-3 hours"
+    },
+    {
+      "type": "Community Engagement",
+      "suggestion": "Volunteer at a local organization or help a neighbor",
+      "benefit": "Creates connection and sense of purpose",
+      "duration": "2-4 hours"
+    }
+  ],
+  "safe": [
+    {
+      "type": "Adventure Planning",
+      "suggestion": "Plan a future trip or explore new places in your city",
+      "benefit": "Builds excitement and gives something to look forward to",
+      "duration": "1-2 hours"
+    },
+    {
+      "type": "Skill Development",
+      "suggestion": "Practice a hobby or start a creative project",
+      "benefit": "Provides flow state and personal satisfaction",
+      "duration": "1-3 hours"
+    },
+    {
+      "type": "Social Exploration",
+      "suggestion": "Join a club, attend events, or meet new people",
+      "benefit": "Expands social circle and creates new experiences",
+      "duration": "2-4 hours"
+    }
+  ]
+}
+  ],
+  "high": [
+    {
+      "type": "Breathing",
+      "suggestion": "Practice box breathing (inhale 4s, hold 4s, exhale 4s, hold 4s)",
+      "benefit": "Calms the nervous system",
+      "location_finder": ""
+    },
+    {
+      "type": "Music",
+      "suggestion": "Listen to a calming playlist",
+      "benefit": "Stabilizes mood",
+      "location_finder": "https://open.spotify.com"
+    },
+    {
+      "type": "Connection",
+      "suggestion": "Text or call a trusted friend",
+      "benefit": "Reminds you that you are not alone",
+      "location_finder": ""
+    }
+  ],
+  "moderate": [
+    {
+      "type": "Creative",
+      "suggestion": "Draw, paint, or doodle for 15 minutes",
+      "benefit": "Express emotions safely",
+      "location_finder": ""
+    },
+    {
+      "type": "Movement",
+      "suggestion": "Take a short walk outdoors",
+      "benefit": "Boosts endorphins and clears the mind",
+      "location_finder": "https://maps.google.com"
+    },
+    {
+      "type": "Journaling",
+      "suggestion": "Write down three thoughts and then reframe them positively",
+      "benefit": "Helps identify and reshape negative thinking",
+      "location_finder": ""
+    }
+  ],
+  "low": [
+    {
+      "type": "Learning",
+      "suggestion": "Watch a short educational video or TED talk",
+      "benefit": "Engages curiosity and perspective",
+      "location_finder": "https://www.ted.com/talks"
+    },
+    {
+      "type": "Cooking",
+      "suggestion": "Cook a simple healthy meal",
+      "benefit": "Provides nourishment and accomplishment",
+      "location_finder": ""
+    },
+    {
+      "type": "Volunteering",
+      "suggestion": "Sign up for a local volunteering opportunity",
+      "benefit": "Promotes purpose and community",
+      "location_finder": "https://www.volunteermatch.org"
+    }
+  ],
+  "safe": [
+    {
+      "type": "Fitness",
+      "suggestion": "Try a new group exercise class",
+      "benefit": "Builds social connection and health",
+      "location_finder": "https://www.classpass.com"
+    },
+    {
+      "type": "Travel",
+      "suggestion": "Plan a weekend trip or explore a new part of your city",
+      "benefit": "Encourages exploration and excitement",
+      "location_finder": "https://maps.google.com"
+    },
+    {
+      "type": "Skill Building",
+      "suggestion": "Take an online course or learn a hobby",
+      "benefit": "Fuels growth and confidence",
+      "location_finder": "https://www.coursera.org"
+    }
+  ]
+}

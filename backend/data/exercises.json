@@ -1,0 +1,27 @@
+{
+  "crisis": [
+    {"exercise": "Box Breathing", "description": "Inhale for 4, hold for 4, exhale for 4, hold for 4", "duration": "5-10 minutes", "benefit": "Calms nervous system instantly"},
+    {"exercise": "5-4-3-2-1 Grounding", "description": "Name 5 things you see, 4 you feel, 3 you hear, 2 you smell, 1 you taste", "duration": "2-5 minutes", "benefit": "Brings you back to the present moment"},
+    {"exercise": "Progressive Muscle Relaxation", "description": "Tense and release muscles from toes to head", "duration": "10-15 minutes", "benefit": "Releases physical tension and anxiety"}
+  ],
+  "high": [
+    {"exercise": "Gentle Yoga Flow", "description": "Simple stretches and breathing poses", "duration": "15-20 minutes", "benefit": "Reduces stress and improves mood"},
+    {"exercise": "Walking Meditation", "description": "Slow, mindful walking focusing on each step", "duration": "10-15 minutes", "benefit": "Combines movement with mindfulness"},
+    {"exercise": "Tai Chi Basics", "description": "Slow, flowing movements with breath control", "duration": "15-20 minutes", "benefit": "Improves balance and mental clarity"}
+  ],
+  "moderate": [
+    {"exercise": "Light Cardio", "description": "Brisk walking, cycling, or swimming", "duration": "20-30 minutes", "benefit": "Releases endorphins and improves energy"},
+    {"exercise": "Strength Training", "description": "Bodyweight exercises or light weights", "duration": "25-30 minutes", "benefit": "Builds confidence and physical strength"},
+    {"exercise": "Dance or Zumba", "description": "Fun, rhythmic movement to music", "duration": "20-30 minutes", "benefit": "Boosts mood and self-expression"}
+  ],
+  "low": [
+    {"exercise": "Interval Training", "description": "Alternating high and low intensity exercises", "duration": "20-25 minutes", "benefit": "Improves fitness and mental resilience"},
+    {"exercise": "Rock Climbing or Bouldering", "description": "Problem-solving physical activity", "duration": "30-60 minutes", "benefit": "Builds focus and accomplishment"},
+    {"exercise": "Team Sports", "description": "Basketball, soccer, volleyball with others", "duration": "45-60 minutes", "benefit": "Social connection and fun competition"}
+  ],
+  "safe": [
+    {"exercise": "Marathon Training", "description": "Long-distance running preparation", "duration": "60-120 minutes", "benefit": "Builds endurance and mental toughness"},
+    {"exercise": "Advanced Yoga", "description": "Challenging poses and sequences", "duration": "60-90 minutes", "benefit": "Deepens mind-body connection"},
+    {"exercise": "CrossFit", "description": "High-intensity functional movements", "duration": "45-60 minutes", "benefit": "Builds overall fitness and community"}
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "crisis": [
+    {
+      "title": "National Suicide Prevention Lifeline (US)",
+      "url": "https://988lifeline.org",
+      "phone": "988",
+      "description": "24/7 free and confidential support for people in distress.",
+      "availability": "Always available"
+    },
+    {
+      "title": "Crisis Text Line (US & International)",
+      "url": "https://www.crisistextline.org",
+      "phone": "Text HOME to 741741 (US)",
+      "description": "Text-based crisis support with trained volunteers.",
+      "availability": "Always available"
+    },
+    {
+      "title": "SAMHSA Helpline (US)",
+      "url": "https://www.samhsa.gov/find-help/national-helpline",
+      "phone": "1-800-662-HELP (4357)",
+      "description": "Free, confidential treatment referral and information.",
+      "availability": "24/7"
+    },
+    {
+      "title": "International Suicide Hotlines Directory",
+      "url": "https://findahelpline.com",
+      "phone": "Varies by country",
+      "description": "Directory of hotlines worldwide for immediate crisis support.",
+      "availability": "Always available"
+    },
+    {
+      "title": "LGBTQ+ Trevor Project Lifeline (US)",
+      "url": "https://www.thetrevorproject.org",
+      "phone": "1-866-488-7386",
+      "description": "Crisis intervention and suicide prevention for LGBTQ+ youth.",
+      "availability": "24/7"
+    }
+  ],
+  "high": [
+    {
+      "title": "NAMI Helpline (US)",
+      "url": "https://www.nami.org/help",
+      "phone": "1-800-950-NAMI (6264)",
+      "description": "Support and education about mental health conditions.",
+      "availability": "Mon–Fri, 10am–10pm ET"
+    },
+    {
+      "title": "BetterHelp Online Therapy",
+      "url": "https://www.betterhelp.com",
+      "phone": null,
+      "description": "Affordable online counseling with licensed therapists.",
+      "availability": "By appointment"
+    }
+  ],
+  "moderate": [
+    {
+      "title": "Mental Health America",
+      "url": "https://www.mhanational.org",
+      "phone": null,
+      "description": "Resources, screenings, and community support.",
+      "availability": "Online access anytime"
+    },
+    {
+      "title": "Psychology Today Therapist Finder",
+      "url": "https://www.psychologytoday.com",
+      "phone": null,
+      "description": "Directory of therapists and support groups.",
+      "availability": "Depends on provider"
+    }
+  ],
+  "low": [
+    {
+      "title": "Headspace",
+      "url": "https://www.headspace.com",
+      "phone": null,
+      "description": "Guided meditation and mindfulness exercises.",
+      "availability": "App/online, always accessible"
+    },
+    {
+      "title": "Calm App",
+      "url": "https://www.calm.com",
+      "phone": null,
+      "description": "Mindfulness, sleep, and relaxation resources.",
+      "availability": "App/online, always accessible"
+    }
+  ],
+  "safe": [
+    {
+      "title": "Positive Psychology Resources",
+      "url": "https://positivepsychology.com",
+      "phone": null,
+      "description": "Articles, exercises, and tools to build well-being.",
+      "availability": "Online access anytime"
+    },
+    {
+      "title": "Greater Good Science Center",
+      "url": "https://greatergood.berkeley.edu",
+      "phone": null,
+      "description": "Science-based insights into happiness and resilience.",
+      "availability": "Online access anytime"
+    }
+  ]
+}

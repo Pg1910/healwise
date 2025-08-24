@@ -1,0 +1,102 @@
+{
+  "crisis": [
+    {
+      "title": "National Suicide Prevention Lifeline",
+      "phone": "988",
+      "description": "24/7 free and confidential support for people in distress. Trained counselors provide immediate crisis intervention.",
+      "type": "Crisis Hotline"
+    },
+    {
+      "title": "Crisis Text Line",
+      "phone": "Text HOME to 741741",
+      "description": "Text-based crisis support with trained volunteers. Available via text message for those who prefer written communication.",
+      "type": "Text Support"
+    },
+    {
+      "title": "SAMHSA National Helpline",
+      "phone": "1-800-662-HELP (4357)",
+      "description": "Free, confidential treatment referral and information service for mental health and substance use disorders.",
+      "type": "Information & Referral"
+    }
+  ],
+  "high": [
+    {
+      "title": "Local Mental Health Services",
+      "phone": "Contact your healthcare provider",
+      "description": "Professional mental health counselors and therapists in your area who can provide ongoing support.",
+      "type": "Professional Care"
+    },
+    {
+      "title": "Employee Assistance Programs",
+      "phone": "Through your workplace",
+      "description": "Many employers offer free, confidential counseling services for employees and their families.",
+      "type": "Workplace Support"
+    },
+    {
+      "title": "Community Mental Health Centers",
+      "phone": "Search locally",
+      "description": "Community-based mental health services often offer sliding scale fees and comprehensive care.",
+      "type": "Community Care"
+    }
+  ],
+  "moderate": [
+    {
+      "title": "Support Groups",
+      "phone": "Local community centers",
+      "description": "Peer support groups for various mental health challenges, both in-person and virtual options.",
+      "type": "Peer Support"
+    },
+    {
+      "title": "Mental Health Apps",
+      "phone": "Available on app stores",
+      "description": "Evidence-based apps for meditation, mood tracking, and cognitive behavioral therapy techniques.",
+      "type": "Digital Tools"
+    },
+    {
+      "title": "University Counseling Centers",
+      "phone": "For students",
+      "description": "Most colleges and universities offer free or low-cost mental health services for students.",
+      "type": "Student Services"
+    }
+  ],
+  "low": [
+    {
+      "title": "Wellness Programs",
+      "phone": "Community centers",
+      "description": "Local wellness programs, yoga classes, and stress management workshops in your community.",
+      "type": "Wellness Programs"
+    },
+    {
+      "title": "Library Resources",
+      "phone": "Local library",
+      "description": "Many libraries offer mental health resources, quiet spaces, and community programs.",
+      "type": "Community Resources"
+    },
+    {
+      "title": "Religious/Spiritual Communities",
+      "phone": "Local congregations",
+      "description": "Faith-based communities often provide counseling, support groups, and spiritual guidance.",
+      "type": "Spiritual Support"
+    }
+  ],
+  "safe": [
+    {
+      "title": "Online Mental Health Education",
+      "phone": "Educational websites",
+      "description": "Reputable sources for learning about mental health, wellness strategies, and self-care techniques.",
+      "type": "Educational Resources"
+    },
+    {
+      "title": "Mindfulness and Meditation Resources",
+      "phone": "Various platforms",
+      "description": "Guided meditation, mindfulness practices, and relaxation techniques for daily wellness.",
+      "type": "Wellness Tools"
+    },
+    {
+      "title": "Fitness and Recreation Centers",
+      "phone": "Local facilities",
+      "description": "Physical activity programs, group fitness classes, and recreational activities that support mental wellness.",
+      "type": "Physical Wellness"
+    }
+  ]
+}

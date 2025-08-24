@@ -1,0 +1,190 @@
+{
+  "crisis": [
+    {
+      "title": "Inside Out",
+      "genre": "Animation, Family, Drama",
+      "description": "Gentle, hopeful film that explores emotions and resilience through a child's journey.",
+      "reason": "Helps understand emotions in a gentle, non-threatening way"
+    },
+    {
+      "title": "Finding Nemo",
+      "genre": "Animation, Adventure",
+      "description": "Heartwarming story of persistence, connection, and overcoming challenges.",
+      "reason": "Inspiring message about not giving up when things seem impossible"
+    },
+    {
+      "title": "A Beautiful Day in the Neighborhood",
+      "genre": "Biography, Drama",
+      "description": "Soothing story about kindness and forgiveness, inspired by Mister Rogers.",
+      "reason": "Gentle reminder of human compassion and healing through kindness"
+    }
+  ],
+  "high": [
+    {
+      "title": "Good Will Hunting",
+      "genre": "Drama",
+      "description": "A powerful story of mentorship, healing, and finding purpose through therapy.",
+      "reason": "Shows how professional help can transform lives"
+    },
+    {
+      "title": "Silver Linings Playbook",
+      "genre": "Comedy, Drama, Romance",
+      "description": "A raw but hopeful look at mental health struggles and finding connection.",
+      "reason": "Realistic portrayal of recovery and building meaningful relationships"
+    },
+    {
+      "title": "The Pursuit of Happyness",
+      "genre": "Biography, Drama",
+      "description": "True story of overcoming homelessness and adversity through determination.",
+      "reason": "Powerful reminder that difficult times can lead to breakthrough moments"
+    }
+  ],
+  "moderate": [
+    {
+      "title": "Little Miss Sunshine",
+      "genre": "Comedy, Drama",
+      "description": "A dysfunctional family's road trip that brings them closer together.",
+      "reason": "Shows how imperfection and vulnerability can strengthen bonds"
+    },
+    {
+      "title": "About Time",
+      "genre": "Comedy, Drama, Romance",
+      "description": "A gentle film about appreciating ordinary moments and relationships.",
+      "reason": "Encourages mindfulness and gratitude for everyday experiences"
+    },
+    {
+      "title": "The Secret Life of Walter Mitty",
+      "genre": "Adventure, Comedy, Drama",
+      "description": "A man breaks out of his routine to live adventurously and authentically.",
+      "reason": "Inspiring story about stepping outside comfort zones"
+    }
+  ],
+  "low": [
+    {
+      "title": "Chef",
+      "genre": "Comedy, Drama",
+      "description": "A chef rediscovers his passion by starting a food truck with his son.",
+      "reason": "Uplifting story about following passion and rebuilding relationships"
+    },
+    {
+      "title": "Julie & Julia",
+      "genre": "Biography, Comedy, Drama",
+      "description": "Two women find purpose through cooking and pursuing their dreams.",
+      "reason": "Motivating story about finding joy through creative pursuits"
+    },
+    {
+      "title": "The Hundred-Foot Journey",
+      "genre": "Comedy, Drama",
+      "description": "Cultural differences dissolve through the universal language of food.",
+      "reason": "Heartwarming tale about connection, tradition, and new beginnings"
+    }
+  ],
+  "safe": [
+    {
+      "title": "Paddington",
+      "genre": "Adventure, Comedy, Family",
+      "description": "A polite bear brings joy and kindness to everyone he meets.",
+      "reason": "Pure, wholesome entertainment that celebrates kindness and optimism"
+    },
+    {
+      "title": "The Grand Budapest Hotel",
+      "genre": "Adventure, Comedy, Crime",
+      "description": "Whimsical tale of friendship and loyalty in a beautifully crafted world.",
+      "reason": "Visually stunning and charming story that sparks joy and wonder"
+    },
+    {
+      "title": "Brooklyn",
+      "genre": "Drama, Romance",
+      "description": "A young Irish woman navigates love and identity in 1950s America.",
+      "reason": "Beautiful coming-of-age story about finding your place in the world"
+    }
+  ]
+}
+      "availability": "Streaming and rental platforms"
+    },
+    {
+      "title": "The Pursuit of Happyness",
+      "url": "https://www.imdb.com/title/tt0454921/",
+      "genre": "Biography, Drama",
+      "description": "Inspiring tale of perseverance through hardship.",
+      "availability": "Widely available on streaming"
+    },
+    {
+      "title": "Silver Linings Playbook",
+      "url": "https://www.imdb.com/title/tt1045658/",
+      "genre": "Drama, Romance",
+      "description": "Explores love and recovery amidst mental health struggles.",
+      "availability": "Available on streaming services"
+    }
+  ],
+  "moderate": [
+    {
+      "title": "The Secret Life of Walter Mitty",
+      "url": "https://www.imdb.com/title/tt0359950/",
+      "genre": "Adventure, Drama, Comedy",
+      "description": "Encourages taking risks and embracing life fully.",
+      "availability": "Streaming and rental platforms"
+    },
+    {
+      "title": "Little Miss Sunshine",
+      "url": "https://www.imdb.com/title/tt0449059/",
+      "genre": "Comedy, Drama",
+      "description": "Quirky family road trip full of resilience and love.",
+      "availability": "Streaming platforms"
+    },
+    {
+      "title": "Julie & Julia",
+      "url": "https://www.imdb.com/title/tt1135503/",
+      "genre": "Biography, Comedy, Drama",
+      "description": "Finding joy and growth through cooking and persistence.",
+      "availability": "Streaming platforms"
+    }
+  ],
+  "low": [
+    {
+      "title": "Forrest Gump",
+      "url": "https://www.imdb.com/title/tt0109830/",
+      "genre": "Drama, Romance",
+      "description": "Life lessons about love, loss, and persistence.",
+      "availability": "Streaming and rental platforms"
+    },
+    {
+      "title": "Amélie",
+      "url": "https://www.imdb.com/title/tt0211915/",
+      "genre": "Romantic Comedy, Drama",
+      "description": "Whimsical story about kindness, connection, and joy.",
+      "availability": "Streaming services"
+    },
+    {
+      "title": "Dead Poets Society",
+      "url": "https://www.imdb.com/title/tt0097165/",
+      "genre": "Drama",
+      "description": "Celebrate individuality, courage, and living fully.",
+      "availability": "Streaming and rental platforms"
+    }
+  ],
+  "safe": [
+    {
+      "title": "The Shawshank Redemption",
+      "url": "https://www.imdb.com/title/tt0111161/",
+      "genre": "Drama",
+      "description": "Hope and redemption even in the darkest times.",
+      "availability": "Streaming and rental platforms"
+    },
+    {
+      "title": "Life Is Beautiful",
+      "url": "https://www.imdb.com/title/tt0118799/",
+      "genre": "Comedy, Drama, Romance",
+      "description": "A tale of love, sacrifice, and optimism amidst hardship.",
+      "availability": "Streaming platforms"
+    },
+    {
+      "title": "The Intouchables",
+      "url": "https://www.imdb.com/title/tt1675434/",
+      "genre": "Biography, Comedy, Drama",
+      "description": "Heartwarming story of friendship and resilience.",
+      "availability": "Streaming services"
+    }
+  ]
+}
+

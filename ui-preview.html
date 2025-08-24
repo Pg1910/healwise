@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealWise UI Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .preview-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .preview-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .preview-header p {
+            font-size: 1.1rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .changes-section {
+            margin-bottom: 40px;
+        }
+
+        .changes-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .change-item {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border-left: 4px solid #667eea;
+        }
+
+        .change-item h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .change-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .status-complete {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-active {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .preview-input {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .preview-input:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+        }
+
+        .preview-input h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .mock-textarea {
+            width: 100%;
+            min-height: 80px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            resize: none;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .mock-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+        }
+
+        .mock-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            float: right;
+        }
+
+        .mock-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .card-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .mock-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .mock-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .mock-card h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .mock-card p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .data-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .before-after {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .before-after h4 {
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .before-after.before h4 {
+            color: #dc2626;
+        }
+
+        .before-after.after h4 {
+            color: #059669;
+        }
+
+        .code-sample {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Cascadia Code', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #92400e;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div class="preview-header">
+            <h1>✍️ HealWise UI Preview</h1>
+            <p>Notion-Style Interface with Link-Free Content</p>
+        </div>
+
+        <div class="changes-section">
+            <h2>🔗 Links Removed Successfully</h2>
+            
+            <div class="change-item">
+                <h3>Books Data <span class="status-badge status-complete">✅ Complete</span></h3>
+                <p>Removed all Goodreads URLs, added rich descriptions for each book recommendation.</p>
+            </div>
+
+            <div class="change-item">
+                <h3>Movies Data <span class="status-badge status-complete">✅ Complete</span></h3>
+                <p>Removed all IMDb URLs, added genre, description, and reasoning for each movie.</p>
+            </div>
+
+            <div class="change-item">
+                <h3>Activities Data <span class="status-badge status-complete">✅ Complete</span></h3>
+                <p>Removed location finder URLs, added duration and enhanced descriptions.</p>
+            </div>
+
+            <div class="change-item">
+                <h3>Resources Data <span class="status-badge status-complete">✅ Complete</span></h3>
+                <p>Removed website URLs, kept essential contact information for crisis support.</p>
+            </div>
+        </div>
+
+        <div class="data-comparison">
+            <div class="before-after before">
+                <h4>❌ Before (With Links)</h4>
+                <div class="code-sample">
+{
+  "title": "Atomic Habits",
+  "author": "James Clear",
+  "url": "https://www.goodreads.com/..."
+}</div>
+            </div>
+            <div class="before-after after">
+                <h4>✅ After (Link-Free)</h4>
+                <div class="code-sample">
+{
+  "title": "Atomic Habits",
+  "author": "James Clear",
+  "description": "Proven strategies for building good habits and breaking bad ones through small, consistent changes."
+}</div>
+            </div>
+        </div>
+
+        <div class="changes-section">
+            <h2>🎨 New Notion-Style UI Features</h2>
+            
+            <div class="change-item">
+                <h3>Enhanced Input Experience <span class="status-badge status-active">🔄 Active</span></h3>
+                <p>Created compelling input area with rotating placeholders, writing prompts, and encouraging feedback.</p>
+                
+                <div class="preview-input">
+                    <h3>✨ Preview: New Input Component</h3>
+                    <textarea 
+                        class="mock-textarea" 
+                        placeholder="What's weighing on your mind today? ✨"
+                        onblur="this.placeholder='Tell me about your day, I\'m here to listen 🌟'"
+                    ></textarea>
+                    <button class="mock-submit">Share ✨</button>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+
+            <div class="change-item">
+                <h3>Suggestion Cards Redesign <span class="status-badge status-active">🔄 Active</span></h3>
+                <p>Beautiful card-based layout with hover effects and better typography.</p>
+                
+                <div class="card-preview">
+                    <div class="mock-card">
+                        <h4>📚 Book Recommendation</h4>
+                        <p><strong>The Power of Now</strong> by Eckhart Tolle</p>
+                        <p>A spiritual guide to finding peace through present-moment awareness.</p>
+                    </div>
+                    <div class="mock-card">
+                        <h4>🎬 Movie Suggestion</h4>
+                        <p><strong>Inside Out</strong> (Animation, Drama)</p>
+                        <p>Gentle film exploring emotions and resilience through a child's journey.</p>
+                    </div>
+                    <div class="mock-card">
+                        <h4>🏃 Exercise Activity</h4>
+                        <p><strong>Box Breathing</strong> (5-10 minutes)</p>
+                        <p>Calms nervous system instantly through structured breathing.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="change-item">
+                <h3>Typography & Colors <span class="status-badge status-complete">✅ Complete</span></h3>
+                <p>Added Inter font family and Notion-inspired color palette with smooth animations.</p>
+            </div>
+        </div>
+
+        <div class="changes-section">
+            <h2>🚀 Next Steps</h2>
+            
+            <div class="change-item">
+                <h3>If you're not seeing changes:</h3>
+                <p>1. <span class="highlight">Clear browser cache</span> (Ctrl+Shift+R or Cmd+Shift+R)</p>
+                <p>2. <span class="highlight">Restart frontend server</span> (npm run dev)</p>
+                <p>3. <span class="highlight">Check browser console</span> for any JavaScript errors</p>
+                <p>4. <span class="highlight">Verify imports</span> in app.jsx for NotionStyleInput component</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity to the preview
+        document.querySelector('.mock-textarea').addEventListener('focus', function() {
+            this.style.transform = 'scale(1.02)';
+            this.style.borderColor = '#667eea';
+        });
+
+        document.querySelector('.mock-textarea').addEventListener('blur', function() {
+            this.style.transform = 'scale(1)';
+            this.style.borderColor = '#e5e7eb';
+        });
+
+        // Rotate placeholder text
+        const placeholders = [
+            "What's weighing on your mind today? ✨",
+            "Share what you're feeling right now... 💭",
+            "Tell me about your day, I'm here to listen 🌟",
+            "What thoughts are swirling in your head? 🌸"
+        ];
+        
+        let currentIndex = 0;
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % placeholders.length;
+            document.querySelector('.mock-textarea').placeholder = placeholders[currentIndex];
+        }, 3000);
+    </script>
+</body>
+</html>

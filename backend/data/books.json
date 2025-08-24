@@ -1,0 +1,62 @@
+{
+  "crisis": [
+    {
+      "title": "Reasons to Stay Alive",
+      "author": "Matt Haig",
+      "description": "A deeply personal and moving account of overcoming depression and finding hope in the darkest moments."
+    },
+    {
+      "title": "The Body Keeps the Score",
+      "author": "Bessel van der Kolk",
+      "description": "Groundbreaking exploration of trauma and its effects on the body and mind, with healing approaches."
+    }
+  ],
+  "high": [
+    {
+      "title": "The Gifts of Imperfection",
+      "author": "Brené Brown",
+      "description": "A guide to letting go of perfectionism and embracing vulnerability, courage, and authenticity."
+    },
+    {
+      "title": "Daring Greatly",
+      "author": "Brené Brown",
+      "description": "How vulnerability and courage can transform your life, work, and relationships."
+    }
+  ],
+  "moderate": [
+    {
+      "title": "Atomic Habits",
+      "author": "James Clear",
+      "description": "Proven strategies for building good habits and breaking bad ones through small, consistent changes."
+    },
+    {
+      "title": "The Power of Now",
+      "author": "Eckhart Tolle",
+      "description": "A spiritual guide to finding peace and enlightenment through present-moment awareness."
+    }
+  ],
+  "low": [
+    {
+      "title": "The Happiness Project",
+      "author": "Gretchen Rubin",
+      "description": "One woman's year-long quest to discover what truly makes life happier and more meaningful."
+    },
+    {
+      "title": "Big Magic",
+      "author": "Elizabeth Gilbert",
+      "description": "Inspiring insights on creativity, curiosity, and living beyond fear to create the life you love."
+    }
+  ],
+  "safe": [
+    {
+      "title": "The Alchemist",
+      "author": "Paulo Coelho",
+      "description": "A magical story about following your dreams and listening to your heart's desires."
+    },
+    {
+      "title": "Becoming",
+      "author": "Michelle Obama",
+      "description": "An intimate and inspiring memoir of the former First Lady's journey of self-discovery."
+    }
+  ]
+}

@@ -1,9 +1,9 @@
-/* Companion-style font imports */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Companion-style font imports */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* Base styles with companion-like warmth */
 * {
@@ -144,8 +144,65 @@ textarea {
   transform: translateY(0);
 }
 
+.companion-text-warm {
+  color: var(--companion-warm);
+}
+
+.companion-text-cool {
+  color: var(--companion-cool);
+}
+
+.companion-gradient-text {
+  background: linear-gradient(135deg, var(--companion-primary) 0%, var(--companion-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Floating elements animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.companion-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Gentle pulse for important elements */
+@keyframes gentlePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.companion-pulse {
+  animation: gentlePulse 2s ease-in-out infinite;
+}
+
+/* Warm focus styles */
+*:focus-visible {
+  outline: 2px solid var(--companion-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* Custom selection colors */
 ::selection {
   background: var(--companion-secondary-light);
   color: var(--companion-gray);
+}
+
+/* Enhanced dark mode support */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 25%, #0f172a 50%, #1e293b 75%, #0f172a 100%);
+    color: #f3f4f6;
+  }
+  
+  :root {
+    --companion-bg: #374151;
+    --companion-bg-card: rgba(55, 65, 81, 0.8);
+    --companion-border: #4b5563;
+    --companion-shadow: rgba(0, 0, 0, 0.3);
+  }
 }

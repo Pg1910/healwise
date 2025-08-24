@@ -5,6 +5,8 @@ import TherapyProgressChart from "./components/TherapyProgressChart";
 import GameCenter from "./components/GameCenter";
 import EarlyWarningDashboard from './components/EarlyWarningDashboard';
 import TestingDashboard from './components/TestingDashboard';
+import SuggestionSection from './components/SuggestionSection';
+import CompanionChatInput from './components/CompanionChatInput';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -216,7 +218,7 @@ function App() {
         risk: data.risk,
         recommendations: data.helpful_resources,
         nextSteps: data.suggested_next_steps,
-        emotions: data.probs
+        therapeuticRecommendations: data.recommendations // New field from enhanced backend
       };
 
       setConversations(prev => ({
@@ -307,58 +309,34 @@ function App() {
               >
                 📝 New Journal Entry
               </button>
-              
-              <button
-                onClick={() => setShowProgress(true)}
-                className={`w-full ${cardClasses} py-2 px-4 rounded-xl font-medium transition-all duration-200 hover:shadow-md`}
-              >
-                📊 Progress Charts
-              </button>
-              
-              <button
-                onClick={() => setShowGames(true)}
-                className={`w-full ${cardClasses} py-2 px-4 rounded-xl font-medium transition-all duration-200 hover:shadow-md`}
-              >
-                🎮 Mind Games
-              </button>
-
-              <button
-                onClick={() => setShowEarlyWarning(true)}
-                className={`w-full ${cardClasses} py-2 px-4 rounded-xl font-medium transition-all duration-200 hover:shadow-md flex items-center space-x-2`}
-              >
-                <span>🔮</span>
-                <span>Wellness Insights</span>
-              </button>
-
-              {process.env.NODE_ENV === 'development' && (
-                <button
-                  onClick={() => setShowTesting(true)}
-                  className={`w-full ${cardClasses} py-2 px-4 rounded-xl font-medium transition-all duration-200 hover:shadow-md border-2 border-dashed border-blue-500`}
-                >
-                  🧪 System Testing
-                </button>
-              )}
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {Object.entries(conversations).map(([id, conv]) => (
                 <div
                   key={id}
                   onClick={() => setActiveConvId(id)}
-                  className={`p-3 rounded-lg cursor-pointer transition-all duration-200 ${
+                  className={`p-4 rounded-xl cursor-pointer transition-all duration-300 border-l-4 ${
                     activeConvId === id 
-                      ? `${darkMode ? 'bg-gray-700 border-l-4 border-amber-500' : 'bg-orange-50 border-l-4 border-orange-500'} shadow-sm` 
-                      : `${darkMode ? 'hover:bg-gray-700' : 'hover:bg-orange-50'}`
+                      ? `${darkMode ? 'bg-gradient-to-r from-gray-700 to-gray-600 border-amber-500 shadow-lg' : 'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-500 shadow-lg'} transform scale-[1.02]` 
+                      : `${darkMode ? 'bg-gray-800 border-gray-600 hover:bg-gray-700 hover:border-amber-400' : 'bg-white border-orange-200 hover:bg-orange-25 hover:border-orange-400'} hover:shadow-md`
                   }`}
                 >
-                  <div className={`text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-                    {conv.messages.length > 0 
-                      ? conv.messages[0].text.substring(0, 30) + '...'
+                  <div className={`text-sm font-semibold mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                    📝 {conv.messages.length > 0 
+                      ? conv.messages[0].text.substring(0, 40) + (conv.messages[0].text.length > 40 ? '...' : '')
                       : 'New conversation'
                     }
                   </div>
-                  <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'} mt-1`}>
-                    {new Date(conv.createdAt).toLocaleDateString()}
+                  <div className="flex items-center justify-between">
+                    <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      📅 {new Date(conv.createdAt).toLocaleDateString()}
+                    </div>
+                    <div className={`text-xs px-2 py-1 rounded-full ${
+                      darkMode ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-800'
+                    }`}>
+                      {conv.messages.length} msgs
+                    </div>
                   </div>
                 </div>
               ))}
@@ -382,7 +360,42 @@ function App() {
                 </p>
               )}
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
+              {/* Top Navigation Items */}
+              <button
+                onClick={() => setShowProgress(true)}
+                className={`px-3 py-1.5 ${cardClasses} rounded-lg text-xs font-medium transition-all duration-200 hover:shadow-md flex items-center space-x-1`}
+              >
+                <span>📊</span>
+                <span>Progress</span>
+              </button>
+              
+              <button
+                onClick={() => setShowGames(true)}
+                className={`px-3 py-1.5 ${cardClasses} rounded-lg text-xs font-medium transition-all duration-200 hover:shadow-md flex items-center space-x-1`}
+              >
+                <span>🎮</span>
+                <span>Games</span>
+              </button>
+
+              <button
+                onClick={() => setShowEarlyWarning(true)}
+                className={`px-3 py-1.5 ${cardClasses} rounded-lg text-xs font-medium transition-all duration-200 hover:shadow-md flex items-center space-x-1`}
+              >
+                <span>🔮</span>
+                <span>Insights</span>
+              </button>
+
+              {process.env.NODE_ENV === 'development' && (
+                <button
+                  onClick={() => setShowTesting(true)}
+                  className={`px-3 py-1.5 ${cardClasses} rounded-lg text-xs font-medium transition-all duration-200 hover:shadow-md border border-blue-500 flex items-center space-x-1`}
+                >
+                  <span>🧪</span>
+                  <span>Testing</span>
+                </button>
+              )}
+              
               <span className={`px-3 py-1 ${darkMode ? 'bg-green-800 text-green-200' : 'bg-green-100 text-green-800'} rounded-full text-xs font-medium`}>
                 🔒 Local & Private
               </span>
@@ -391,40 +404,36 @@ function App() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div className="flex-1 overflow-y-auto p-8 space-y-6 max-w-5xl mx-auto w-full">
           {currentMessages.map((msg, i) => (
             <div
               key={i}
-              className={`flex items-start space-x-3 ${
+              className={`flex items-start space-x-4 ${
                 msg.from === "user" ? "justify-end" : "justify-start"
               }`}
             >
               {msg.from === "bot" && (
-                <div className={`w-8 h-8 ${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} rounded-full flex items-center justify-center text-white text-sm font-medium`}>
+                <div className={`w-10 h-10 ${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} rounded-full flex items-center justify-center text-white text-sm font-medium shadow-lg`}>
                   ✍️
                 </div>
               )}
               <div
-                className={`max-w-md px-4 py-3 rounded-2xl shadow-sm ${
+                className={`max-w-2xl px-6 py-4 rounded-2xl shadow-md ${
                   msg.from === "user"
                     ? `${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-br-md`
                     : `${darkMode ? 'bg-gray-700 text-gray-100 border-gray-600' : 'bg-white text-gray-800 border-orange-200'} rounded-bl-md border`
                 }`}
               >
-                <p className="text-sm leading-relaxed font-serif">{msg.text}</p>
-                {msg.recommendations && msg.recommendations.length > 0 && (
-                  <div className={`mt-3 p-2 ${darkMode ? 'bg-blue-900 bg-opacity-50' : 'bg-blue-50'} rounded-lg`}>
-                    <p className={`text-xs font-medium ${darkMode ? 'text-blue-200' : 'text-blue-800'} mb-1`}>💡 Gentle suggestions:</p>
-                    <ul className={`text-xs ${darkMode ? 'text-blue-300' : 'text-blue-700'} space-y-1`}>
-                      {msg.recommendations.map((rec, idx) => (
-                        <li key={idx}>• {rec}</li>
-                      ))}
-                    </ul>
-                  </div>
+                <p className="text-base leading-relaxed font-serif">{msg.text}</p>
+                {(msg.nextSteps || msg.therapeuticRecommendations) && (
+                  <SuggestionSection 
+                    suggestions={msg.nextSteps}
+                    recommendations={msg.therapeuticRecommendations}
+                  />
                 )}
               </div>
               {msg.from === "user" && (
-                <div className={`w-8 h-8 ${darkMode ? 'bg-gray-600' : 'bg-gray-300'} rounded-full flex items-center justify-center ${darkMode ? 'text-gray-300' : 'text-gray-600'} text-sm`}>
+                <div className={`w-10 h-10 ${darkMode ? 'bg-gray-600' : 'bg-gray-300'} rounded-full flex items-center justify-center ${darkMode ? 'text-gray-300' : 'text-gray-600'} text-sm shadow-lg`}>
                   👤
                 </div>
               )}
@@ -432,13 +441,13 @@ function App() {
           ))}
           
           {loading && (
-            <div className="flex items-start space-x-3">
-              <div className={`w-8 h-8 ${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} rounded-full flex items-center justify-center text-white text-sm font-medium`}>
+            <div className="flex items-start space-x-4">
+              <div className={`w-10 h-10 ${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} rounded-full flex items-center justify-center text-white text-sm font-medium shadow-lg`}>
                 ✍️
               </div>
-              <div className={`${darkMode ? 'bg-gray-700 text-gray-100 border-gray-600' : 'bg-white text-gray-800 border-orange-200'} rounded-2xl rounded-bl-md border px-4 py-3 shadow-sm`}>
-                <div className="flex items-center space-x-2">
-                  <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} italic`}>HealWise is reflecting...</span>
+              <div className={`${darkMode ? 'bg-gray-700 text-gray-100 border-gray-600' : 'bg-white text-gray-800 border-orange-200'} rounded-2xl rounded-bl-md border px-6 py-4 shadow-md`}>
+                <div className="flex items-center space-x-3">
+                  <span className={`text-base ${darkMode ? 'text-gray-300' : 'text-gray-500'} italic`}>HealWise is reflecting...</span>
                   <div className="typing-dots flex space-x-1">
                     <div className={`w-2 h-2 ${darkMode ? 'bg-amber-500' : 'bg-orange-500'} rounded-full animate-bounce`}></div>
                     <div className={`w-2 h-2 ${darkMode ? 'bg-amber-500' : 'bg-orange-500'} rounded-full animate-bounce`} style={{animationDelay: '0.1s'}}></div>
@@ -451,26 +460,13 @@ function App() {
         </div>
 
         {/* Enhanced Input Area */}
-        <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-orange-200'} border-t p-4`}>
-          <div className="flex space-x-3">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="What's weighing on your mind today? Share your thoughts, feelings, or experiences... 📝"
-              className={`flex-1 resize-none border ${darkMode ? 'border-gray-600 bg-gray-700 text-gray-100 focus:ring-amber-500' : 'border-orange-300 bg-white text-gray-800 focus:ring-orange-500'} rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-200 font-serif`}
-              rows="2"
-              disabled={loading}
-            />
-            <button
-              onClick={sendMessage}
-              disabled={loading || !input.trim()}
-              className={`${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700' : 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'} text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
-            >
-              {loading ? "..." : "Share"}
-            </button>
-          </div>
-        </div>
+        <CompanionChatInput
+          value={input}
+          onChange={setInput}
+          onSubmit={sendMessage}
+          loading={loading}
+          darkMode={darkMode}
+        />
       </div>
     </div>
   );
