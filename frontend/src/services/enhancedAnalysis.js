@@ -131,7 +131,29 @@ function generateContextualResponse(userText, emotions, primaryEmotion, conversa
   
   let message, steps, questions;
   
-  if (textLower.includes('anxious') || textLower.includes('anxiety') || textLower.includes('worry')) {
+  if (textLower.includes('lonely') || textLower.includes('alone') || textLower.includes('isolated')) {
+    message = isFirstMessage 
+      ? `I can really hear the loneliness in what you've shared, and I want you to know that reaching out like this shows so much courage. Loneliness can feel like you're on an island, surrounded by people but still feeling disconnected. It's one of the most human experiences, yet it can feel so isolating.
+
+The fact that you're here, sharing this with me, tells me you're looking for connection - and that's a beautiful, brave thing. Loneliness often isn't just about being alone; it's about feeling unseen or misunderstood.
+
+Can you tell me more about what the loneliness feels like for you? Is it that you're physically alone, or is it more about feeling disconnected even when others are around?`
+      : `The loneliness you're describing sounds really profound. It takes a lot of strength to keep reaching out when you're feeling this disconnected.
+
+I'm wondering - when you think about the loneliness, what do you miss most? Is it having someone who really gets you, or is it more about having people around, or something else entirely?`;
+    
+    steps = [
+      "Write a letter to yourself from the perspective of a loving friend - what would they say to you right now?",
+      "Take a gentle walk in a public space like a park or café, just to be around the energy of others without pressure",
+      "Reach out to one person you haven't talked to in a while, even if it's just to say hello",
+      "Consider joining an online community or local group that shares one of your interests"
+    ];
+    
+    questions = [
+      "What does connection mean to you right now? What would it look like?",
+      "Are there people in your life who care about you, even if they feel distant right now?"
+    ];
+  } else if (textLower.includes('anxious') || textLower.includes('anxiety') || textLower.includes('worry')) {
     message = isFirstMessage 
       ? `I can sense the weight of anxiety in your words. It takes real courage to reach out when you're feeling this way. Anxiety can feel overwhelming, like your mind is racing with worries that seem bigger than you can handle. I want you to know that what you're experiencing is valid, and you're not alone in feeling this way.
 
@@ -191,6 +213,26 @@ Can you help me understand what feels like the most pressing thing on your mind 
       "If you could remove just one thing from your plate right now, what would it be?",
       "What support do you have around you that maybe you haven't been able to access?"
     ];
+  } else if (textLower.includes('angry') || textLower.includes('frustrated') || textLower.includes('mad')) {
+    message = isFirstMessage
+      ? `I can feel the intensity of your frustration. Anger is often our heart's way of saying 'this matters to me.' Your feelings are completely valid, and there's usually something important underneath that anger that deserves attention.
+
+What's been building up that's brought you to this point? Sometimes anger is protecting us from feeling hurt, or it's responding to something that feels unfair or wrong.`
+      : `The anger you're experiencing sounds really intense. It takes courage to sit with those strong feelings and try to understand them.
+
+What do you think your anger is trying to tell you? Is it pointing to something that needs to change, or a boundary that's been crossed?`;
+    
+    steps = [
+      "Channel this energy through physical activity like walking or exercise",
+      "Write out your feelings without editing - let the anger flow onto paper",
+      "Practice deep breathing to help manage the intensity",
+      "Consider what boundary or change might address the source of anger"
+    ];
+    
+    questions = [
+      "What feels most unfair or frustrating about your current situation?",
+      "If you could change one thing that's making you angry, what would it be?"
+    ];
   } else {
     message = isFirstMessage
       ? `Thank you for sharing what's on your mind with me. I can tell there's something weighing on you, and I want you to know that whatever you're experiencing matters. Sometimes it's hard to put feelings into words, and that's okay too.
@@ -221,6 +263,10 @@ function analyzeEmotionsLocal(text) {
   let emotions = { neutral: 0.1 };
   
   // Enhanced emotion detection
+  if (textLower.match(/lonely|alone|isolated|disconnected|no one understands|by myself/)) {
+    emotions.loneliness = 0.8;
+    emotions.sadness = 0.4;
+  }
   if (textLower.match(/anxious|anxiety|worry|worried|nervous|stress|stressed|panic/)) {
     emotions.anxiety = 0.8;
     emotions.fear = 0.3;
@@ -243,9 +289,6 @@ function analyzeEmotionsLocal(text) {
   }
   if (textLower.match(/confused|lost|uncertain|don't know|unclear/)) {
     emotions.confusion = 0.6;
-  }
-  if (textLower.match(/lonely|alone|isolated|disconnected/)) {
-    emotions.loneliness = 0.7;
   }
   
   return emotions;
@@ -284,7 +327,44 @@ function generateRichRecommendations(text, emotions) {
     exercises: []
   };
   
-  if (textLower.includes('anxious') || emotions.anxiety > 0.5) {
+  if (textLower.includes('lonely') || textLower.includes('alone') || emotions.loneliness > 0.5) {
+    recommendations.activities = [
+      { name: "Video Call a Friend", description: "Reach out to someone you trust for a virtual coffee", duration: "30 minutes", benefit: "Human connection" },
+      { name: "Join an Online Community", description: "Find a Discord, Reddit, or Facebook group with shared interests", duration: "15 minutes", benefit: "Sense of belonging" },
+      { name: "Visit a Local Café", description: "Be around people without pressure to interact", duration: "30 minutes", benefit: "Social energy" },
+      { name: "Write a Letter", description: "Write to a friend, family member, or even yourself", duration: "20 minutes", benefit: "Connection and reflection" }
+    ];
+    
+    recommendations.books = [
+      { title: "The Gifts of Imperfection", author: "Brené Brown", description: "Building authentic connections" },
+      { title: "Together: The Healing Power of Human Connection", author: "Vivek Murthy", description: "Understanding loneliness and community" },
+      { title: "Social: Why Our Brains Are Wired to Connect", author: "Matthew Lieberman", description: "The science of human connection" }
+    ];
+    
+    recommendations.movies = [
+      { title: "Lost in Translation", description: "Beautiful exploration of connection and isolation", mood: "thoughtful", duration: "102 min" },
+      { title: "Her", description: "Modern relationships and emotional connection", mood: "reflective", duration: "126 min" },
+      { title: "The Way Way Back", description: "Finding your place and people", mood: "heartwarming", duration: "103 min" }
+    ];
+    
+    recommendations.nutrition = [
+      { name: "Warm Tea Ritual", benefit: "Comforting self-care practice", timing: "Anytime" },
+      { name: "Comfort Food in Moderation", benefit: "Emotional soothing", timing: "When needed", examples: "Soup, warm bread, chocolate" },
+      { name: "Social Eating", benefit: "Connection opportunity", timing: "Meals", examples: "Order with a friend online, cook while video calling" }
+    ];
+    
+    recommendations.quotes = [
+      "The greatest thing in the world is to know how to belong to oneself. - Michel de Montaigne",
+      "We are all alone, born alone, die alone, and—in spite of True Romance magazines—we shall all someday look back on our lives and see that, in spite of our company, we were alone the whole way. - Hunter S. Thompson",
+      "The eternal quest of the individual human being is to shatter his loneliness. - Norman Cousins"
+    ];
+    
+    recommendations.exercises = [
+      { name: "Walking in Public Spaces", description: "Gentle movement around others", duration: "20 minutes" },
+      { name: "Group Fitness Class (Online)", description: "Exercise with virtual community", duration: "30 minutes" },
+      { name: "Dance to Music", description: "Express yourself freely", duration: "15 minutes" }
+    ];
+  } else if (textLower.includes('anxious') || emotions.anxiety > 0.5) {
     recommendations.activities = [
       { name: "4-7-8 Breathing", description: "Inhale 4, hold 7, exhale 8 seconds", duration: "5 minutes", benefit: "Activates calm response" },
       { name: "Progressive Muscle Relaxation", description: "Tense and release each muscle group", duration: "15 minutes", benefit: "Physical anxiety relief" },
