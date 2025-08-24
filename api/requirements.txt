@@ -1,2 +1,0 @@
-# Minimal requirements for Vercel serverless function
-# No heavy ML dependencies to keep function lightweight

@@ -4,18 +4,10 @@
   "outputDirectory": "frontend/dist",
   "installCommand": "cd frontend && npm install",
   "framework": "vite",
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/analyze",
-      "dest": "/api/analyze.py"
-    },
-    {
-      "src": "/api/health",
-      "dest": "/api/analyze.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
