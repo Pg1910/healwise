@@ -183,7 +183,6 @@ function App() {
 
     const userMsg = { from: "user", text, timestamp: new Date().toISOString() };
     
-    // Update conversation with user message
     setConversations(prev => ({
       ...prev,
       [activeConvId]: {
@@ -196,38 +195,16 @@ function App() {
     setLoading(true);
 
     try {
-      // Get conversation history for context
-      const currentConversation = conversations[activeConvId];
-      const conversationHistory = currentConversation?.messages || [];
-      
-      // Create session ID for this conversation
-      const sessionId = activeConvId;
-      
-      const requestBody = {
-        text,
-        conversation_history: conversationHistory,
-        session_id: sessionId,
-        user_profile: userProfile || {}
-      };
-
-      console.log('Sending request to API:', requestBody);
-
       const res = await fetch(`http://127.0.0.1:8000/analyze`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
           "X-User-Profile": JSON.stringify(userProfile)
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({ text }),
       });
 
       const data = await res.json();
-      
-      // Debug logging
-      console.log('API Response:', data);
-      console.log('Conversation Stage:', data.conversation_stage);
-      console.log('Suggestion Mode:', data.suggestion_mode);
-      console.log('Available Suggestion Types:', data.suggestion_types);
       
       // Update progress tracking
       if (data.probs) {
@@ -240,22 +217,15 @@ function App() {
         timestamp: new Date().toISOString(),
         risk: data.risk,
         recommendations: data.recommendations, // Comprehensive recommendations object
-        nextSteps: data.suggested_next_steps || [],
-        conversation_stage: data.conversation_stage,
-        suggestion_mode: data.suggestion_mode,
-        suggestion_types: data.suggestion_types || [],
-        session_insights: data.session_insights || {}
+        nextSteps: data.suggested_next_steps,
+        therapeuticRecommendations: data.recommendations // Pass same object for compatibility
       };
-
-      console.log('Bot message created:', botMsg);
 
       setConversations(prev => ({
         ...prev,
         [activeConvId]: {
           ...prev[activeConvId],
-          messages: [...(prev[activeConvId]?.messages || []), botMsg],
-          session_insights: data.session_insights,
-          conversation_stage: data.conversation_stage
+          messages: [...(prev[activeConvId]?.messages || []), botMsg]
         }
       }));
     } catch (err) {
@@ -275,81 +245,6 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const sendProgrammaticMessage = async (text) => {
-    if (!text || !activeConvId) return;
-
-    const userMsg = { from: "user", text, timestamp: new Date().toISOString() };
-
-    setConversations(prev => ({
-      ...prev,
-      [activeConvId]: {
-        ...prev[activeConvId],
-        messages: [...(prev[activeConvId]?.messages || []), userMsg]
-      }
-    }));
-
-    setLoading(true);
-    try {
-      const currentConversation = conversations[activeConvId];
-      const conversationHistory = (currentConversation?.messages || []).concat(userMsg);
-      const sessionId = activeConvId;
-
-      const requestBody = {
-        text,
-        conversation_history: conversationHistory,
-        session_id: sessionId,
-        user_profile: userProfile || {}
-      };
-
-      const res = await fetch(`http://127.0.0.1:8000/analyze`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-      });
-
-      const data = await res.json();
-
-      const botMsg = {
-        from: "bot",
-        text: data.supportive_message,
-        timestamp: new Date().toISOString(),
-        risk: data.risk,
-        recommendations: data.recommendations,
-        nextSteps: data.suggested_next_steps || [],
-        conversation_stage: data.conversation_stage,
-        suggestion_mode: data.suggestion_mode,
-        suggestion_types: data.suggestion_types || [],
-        session_insights: data.session_insights || {}
-      };
-
-      setConversations(prev => ({
-        ...prev,
-        [activeConvId]: {
-          ...prev[activeConvId],
-          messages: [...(prev[activeConvId]?.messages || []), botMsg]
-        }
-      }));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSuggestionRequest = (type) => {
-    const typeToPrompt = {
-      gentle_steps: "I'd like some gentle steps I can try now.",
-      words_of_comfort: "Could you share some comforting words?",
-      feel_good_films: "Please suggest some feel-good films.",
-      healing_reads: "Please suggest some healing reads.",
-      mindful_movement: "I'd like mindful movement suggestions.",
-      nourishing_care: "I'd like some nourishing care ideas.",
-      peaceful_places: "Please suggest some peaceful activities.",
-      support_resources: "Please share support resources."
-    };
-
-    const prompt = typeToPrompt[type] || `I'd like ${type} suggestions.`;
-    sendProgrammaticMessage(prompt);
   };
 
   const handleKeyPress = (e) => {
@@ -530,14 +425,10 @@ function App() {
                 }`}
               >
                 <p className="text-base leading-relaxed font-serif">{msg.text}</p>
-                {(msg.nextSteps || msg.recommendations) && (
+                {(msg.nextSteps || msg.therapeuticRecommendations) && (
                   <SuggestionSection 
                     suggestions={msg.nextSteps}
-                    recommendations={msg.recommendations}
-                    suggestion_mode={msg.suggestion_mode}
-                    suggestion_types={msg.suggestion_types}
-                    conversation_stage={msg.conversation_stage}
-                    onSuggestionRequest={handleSuggestionRequest}
+                    recommendations={msg.therapeuticRecommendations}
                   />
                 )}
               </div>
