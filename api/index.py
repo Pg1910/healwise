@@ -1,59 +1,74 @@
 from http.server import BaseHTTPRequestHandler
 import json
-import re
+import urllib.parse
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
-        if self.path == '/api/analyze':
-            self.handle_analyze()
-        else:
-            self.send_error(404)
-    
-    def do_GET(self):
-        if self.path == '/api/health':
-            self.handle_health()
-        else:
-            self.send_error(404)
-    
-    def do_OPTIONS(self):
+        # Set CORS headers for all responses
         self.send_response(200)
-        self.send_cors_headers()
-        self.end_headers()
-    
-    def send_cors_headers(self):
+        self.send_header('Content-type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-    
-    def handle_health(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.send_cors_headers()
         self.end_headers()
         
+        if self.path == '/api/analyze':
+            self.handle_analyze()
+        else:
+            response = {"error": "Not found"}
+            self.wfile.write(json.dumps(response).encode())
+    
+    def do_GET(self):
+        # Set CORS headers for all responses
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+        
+        if self.path == '/api/health':
+            self.handle_health()
+        else:
+            response = {"error": "Not found"}
+            self.wfile.write(json.dumps(response).encode())
+    
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+    
+    def handle_health(self):
         response = {"status": "healthy", "model_loaded": True}
         self.wfile.write(json.dumps(response).encode())
     
     def handle_analyze(self):
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length)
-        
         try:
-            data = json.loads(post_data.decode('utf-8'))
-            text = data.get('text', '')
+            content_length = int(self.headers.get('Content-Length', 0))
+            if content_length > 0:
+                post_data = self.rfile.read(content_length)
+                data = json.loads(post_data.decode('utf-8'))
+                text = data.get('text', '')
+            else:
+                text = ''
             
             # Generate contextual response
             response = self.generate_contextual_fallback(text)
-            
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.send_cors_headers()
-            self.end_headers()
-            
             self.wfile.write(json.dumps(response).encode())
             
         except Exception as e:
-            self.send_error(500, str(e))
+            error_response = {
+                "error": str(e),
+                "probs": {"neutral": 1.0},
+                "risk": "SAFE",
+                "supportive_message": "I'm here to support you, though I'm having a technical moment. Your feelings are valid and important.",
+                "suggested_next_steps": ["Take a deep breath", "Try again in a moment"],
+                "helpful_resources": ["Crisis Text Line: Text HOME to 741741"],
+                "recommendations": {"activities": [], "books": [], "movies": [], "nutrition": [], "resources": []}
+            }
+            self.wfile.write(json.dumps(error_response).encode())
     
     def generate_contextual_fallback(self, text):
         """Generate intelligent response based on text analysis"""
