@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import HealWiseTestSuite from '../utils/testingUtils';
+import HealWiseTestSuite from '../utils/testingUtils.js';
 
 export default function TestingDashboard({ onBack, darkMode }) {
   const [testResults, setTestResults] = useState(null);

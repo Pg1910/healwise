@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import EarlyDetectionEngine from '../utils/earlyDetection';
+import EarlyDetectionEngine from '../utils/earlyDetection.js';
 
 export default function EarlyWarningDashboard({ conversations, userProfile, onBack, darkMode }) {
   const [analysis, setAnalysis] = useState(null);

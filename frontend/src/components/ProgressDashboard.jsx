@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ConversationManager from '../utils/conversationManager';
+import ConversationManager from '../utils/conversationManager.js';
 
 export default function ProgressDashboard({ onBack, darkMode, userProfile }) {
   const [insights, setInsights] = useState(null);
