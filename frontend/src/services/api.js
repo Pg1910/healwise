@@ -1,14 +1,23 @@
 // frontend/src/services/api.js
+import { analyzeWithMistral } from './enhancedAnalysis.js';
 
 const API_BASE_URL = import.meta.env.PROD 
   ? 'https://healwise-backend.railway.app'  
   : 'http://localhost:8000';
 
-export async function analyzeText(text) {
+export async function analyzeText(text, conversationHistory = []) {
   try {
-    console.log('🔄 Starting analysis...');
-    const startTime = Date.now();
+    console.log('🔄 Starting enhanced analysis...');
     
+    // Try enhanced analysis with Mistral first
+    const enhancedResult = await analyzeWithMistral(text, conversationHistory);
+    if (enhancedResult) {
+      console.log('✅ Enhanced analysis complete:', enhancedResult);
+      return enhancedResult;
+    }
+    
+    // Fallback to original backend if enhanced fails
+    const startTime = Date.now();
     const res = await fetch(`${API_BASE_URL}/analyze`, {
       method: "POST",
       mode: "cors",
@@ -30,7 +39,7 @@ export async function analyzeText(text) {
     }
 
     const data = await res.json();
-    console.log('✅ Analysis complete:', data);
+    console.log('✅ Backend analysis complete:', data);
     
     // Validate response matches copilot instructions contract
     if (!data.probs || !data.supportive_message || !data.suggested_next_steps || !data.helpful_resources) {
@@ -40,9 +49,9 @@ export async function analyzeText(text) {
     
     return data;
   } catch (error) {
-    console.error("🚨 Backend unavailable, using offline mode:", error.message);
+    console.error("🚨 All analysis methods failed, using basic fallback:", error.message);
     
-    // Rich fallback response with depth and context per copilot instructions
+    // Basic fallback response
     return generateContextualFallback(text);
   }
 }

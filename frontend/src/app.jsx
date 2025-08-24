@@ -24,6 +24,7 @@ function App() {
   const [showEarlyWarning, setShowEarlyWarning] = useState(false);
   const [showTesting, setShowTesting] = useState(false);
   const [progressData, setProgressData] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Load user data from localStorage on mount
   useEffect(() => {
@@ -184,6 +185,9 @@ function App() {
 
     const userMsg = { from: "user", text, timestamp: new Date().toISOString() };
     
+    // Get conversation history for context
+    const conversationHistory = conversations[activeConvId]?.messages || [];
+    
     setConversations(prev => ({
       ...prev,
       [activeConvId]: {
@@ -196,21 +200,31 @@ function App() {
     setLoading(true);
 
     try {
-      const data = await analyzeText(text);
+      // Pass conversation history for context
+      const data = await analyzeText(text, conversationHistory);
       
       // Update progress tracking
       if (data.probs) {
         updateProgressData(data.probs, data.risk);
       }
 
+      // Check if user explicitly asked for suggestions
+      const askedForSuggestions = text.toLowerCase().includes('suggest') || 
+                                 text.toLowerCase().includes('recommend') || 
+                                 text.toLowerCase().includes('what should i do') ||
+                                 text.toLowerCase().includes('help me') ||
+                                 text.toLowerCase().includes('what can i do');
+
       const botMsg = {
         from: "bot",
         text: data.supportive_message,
         timestamp: new Date().toISOString(),
         risk: data.risk,
-        recommendations: data.recommendations, // Comprehensive recommendations object
+        recommendations: data.recommendations,
         nextSteps: data.suggested_next_steps,
-        therapeuticRecommendations: data.recommendations // Pass same object for compatibility
+        therapeuticRecommendations: data.recommendations,
+        followUpQuestions: data.follow_up_questions || [],
+        showSuggestions: askedForSuggestions || data.risk !== 'SAFE' // Show suggestions if asked or if risk detected
       };
 
       setConversations(prev => ({
@@ -396,36 +410,56 @@ function App() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-8 space-y-6 max-w-5xl mx-auto w-full">
+        <div className="flex-1 overflow-y-auto p-4 space-y-6 w-full">
           {currentMessages.map((msg, i) => (
             <div
               key={i}
-              className={`flex items-start space-x-4 ${
-                msg.from === "user" ? "justify-end" : "justify-start"
+              className={`flex items-start space-x-4 w-full ${
+                msg.from === "user" ? "justify-end pr-4" : "justify-start pl-4"
               }`}
             >
               {msg.from === "bot" && (
-                <div className={`w-10 h-10 ${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} rounded-full flex items-center justify-center text-white text-sm font-medium shadow-lg`}>
+                <div className={`w-10 h-10 ${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} rounded-full flex items-center justify-center text-white text-sm font-medium shadow-lg flex-shrink-0`}>
                   ✍️
                 </div>
               )}
-              <div
-                className={`max-w-2xl px-6 py-4 rounded-2xl shadow-md ${
-                  msg.from === "user"
-                    ? `${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-br-md`
-                    : `${darkMode ? 'bg-gray-700 text-gray-100 border-gray-600' : 'bg-white text-gray-800 border-orange-200'} rounded-bl-md border`
-                }`}
-              >
-                <p className="text-base leading-relaxed font-serif">{msg.text}</p>
-                {(msg.nextSteps || msg.therapeuticRecommendations) && (
-                  <SuggestionSection 
-                    suggestions={msg.nextSteps}
-                    recommendations={msg.therapeuticRecommendations}
-                  />
+              <div className="flex flex-col max-w-2xl">
+                <div
+                  className={`px-6 py-4 rounded-2xl shadow-md ${
+                    msg.from === "user"
+                      ? `${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-br-md`
+                      : `${darkMode ? 'bg-gray-700 text-gray-100 border-gray-600' : 'bg-white text-gray-800 border-orange-200'} rounded-bl-md border`
+                  }`}
+                >
+                  <p className="text-base leading-relaxed font-serif">{msg.text}</p>
+                </div>
+                
+                {/* Follow-up questions */}
+                {msg.followUpQuestions && msg.followUpQuestions.length > 0 && (
+                  <div className={`mt-3 p-3 rounded-lg ${darkMode ? 'bg-gray-800 border-gray-600' : 'bg-amber-50 border-amber-200'} border`}>
+                    <p className={`text-sm font-medium ${darkMode ? 'text-amber-300' : 'text-amber-700'} mb-2`}>
+                      💭 I'd love to understand more:
+                    </p>
+                    {msg.followUpQuestions.map((question, qi) => (
+                      <p key={qi} className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-1 italic`}>
+                        • {question}
+                      </p>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Conditional Suggestions */}
+                {msg.showSuggestions && (msg.nextSteps || msg.therapeuticRecommendations) && (
+                  <div className="mt-4">
+                    <SuggestionSection 
+                      suggestions={msg.nextSteps}
+                      recommendations={msg.therapeuticRecommendations}
+                    />
+                  </div>
                 )}
               </div>
               {msg.from === "user" && (
-                <div className={`w-10 h-10 ${darkMode ? 'bg-gray-600' : 'bg-gray-300'} rounded-full flex items-center justify-center ${darkMode ? 'text-gray-300' : 'text-gray-600'} text-sm shadow-lg`}>
+                <div className={`w-10 h-10 ${darkMode ? 'bg-gray-600' : 'bg-gray-300'} rounded-full flex items-center justify-center ${darkMode ? 'text-gray-300' : 'text-gray-600'} text-sm shadow-lg flex-shrink-0`}>
                   👤
                 </div>
               )}
@@ -433,8 +467,8 @@ function App() {
           ))}
           
           {loading && (
-            <div className="flex items-start space-x-4">
-              <div className={`w-10 h-10 ${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} rounded-full flex items-center justify-center text-white text-sm font-medium shadow-lg`}>
+            <div className="flex items-start space-x-4 pl-4">
+              <div className={`w-10 h-10 ${darkMode ? 'bg-gradient-to-r from-amber-600 to-orange-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} rounded-full flex items-center justify-center text-white text-sm font-medium shadow-lg flex-shrink-0`}>
                 ✍️
               </div>
               <div className={`${darkMode ? 'bg-gray-700 text-gray-100 border-gray-600' : 'bg-white text-gray-800 border-orange-200'} rounded-2xl rounded-bl-md border px-6 py-4 shadow-md`}>

@@ -62,12 +62,15 @@ const SuggestionSection = ({ suggestions, recommendations }) => {
             {recommendations?.quotes?.length > 0 ? (
               recommendations.quotes.map((quote, index) => (
                 <div key={index} className="quote-card">
-                  <blockquote>"{quote}"</blockquote>
+                  <blockquote className="italic border-l-4 border-amber-400 pl-4 py-2">
+                    "{quote}"
+                  </blockquote>
                 </div>
               ))
             ) : (
-              <div className="empty-state">
-                <p>No quotes available right now. Try refreshing or check back later.</p>
+              <div className="empty-state text-center py-8">
+                <p className="text-gray-600 mb-4">💝 Comforting words will appear here</p>
+                <p className="text-sm text-gray-500">Share more about your feelings to receive personalized quotes of comfort</p>
               </div>
             )}
           </div>
@@ -77,15 +80,24 @@ const SuggestionSection = ({ suggestions, recommendations }) => {
           <div className="movies-panel">
             {recommendations?.movies?.length > 0 ? (
               recommendations.movies.map((movie, index) => (
-                <div key={index} className="movie-card">
-                  <span className="movie-icon">🎬</span>
-                  {movie}
+                <div key={index} className="movie-card bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200 mb-3">
+                  <div className="flex items-start space-x-3">
+                    <span className="movie-icon text-2xl">🎬</span>
+                    <div>
+                      <h4 className="font-semibold text-gray-800">{movie.title}</h4>
+                      <p className="text-sm text-gray-600 mt-1">{movie.description}</p>
+                      <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                        <span className="bg-purple-100 px-2 py-1 rounded-full">{movie.mood}</span>
+                        {movie.duration && <span>⏱️ {movie.duration}</span>}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))
             ) : (
-              <div className="movie-card">
-                <span className="movie-icon">🍿</span>
-                Movie recommendations will appear here to lift your spirits
+              <div className="empty-state text-center py-8">
+                <p className="text-gray-600 mb-4">🍿 Feel-good films will appear here</p>
+                <p className="text-sm text-gray-500">Share your current mood to get personalized movie recommendations</p>
               </div>
             )}
           </div>
@@ -95,15 +107,23 @@ const SuggestionSection = ({ suggestions, recommendations }) => {
           <div className="books-panel">
             {recommendations?.books?.length > 0 ? (
               recommendations.books.map((book, index) => (
-                <div key={index} className="book-item">
-                  <span className="book-icon">📚</span>
-                  {book}
+                <div key={index} className="book-item bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200 mb-3">
+                  <div className="flex items-start space-x-3">
+                    <span className="book-icon text-2xl">📚</span>
+                    <div>
+                      <h4 className="font-semibold text-gray-800">{book.title}</h4>
+                      <p className="text-sm text-blue-600 mt-1">by {book.author}</p>
+                      {book.description && (
+                        <p className="text-sm text-gray-600 mt-2">{book.description}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))
             ) : (
-              <div className="book-item">
-                <span className="book-icon">📖</span>
-                Book recommendations will appear here based on your needs
+              <div className="empty-state text-center py-8">
+                <p className="text-gray-600 mb-4">📖 Healing reads will appear here</p>
+                <p className="text-sm text-gray-500">Continue our conversation to discover books that might help</p>
               </div>
             )}
           </div>
@@ -113,15 +133,23 @@ const SuggestionSection = ({ suggestions, recommendations }) => {
           <div className="exercise-panel">
             {recommendations?.exercises?.length > 0 ? (
               recommendations.exercises.map((exercise, index) => (
-                <div key={index} className="exercise-card">
-                  <span className="exercise-icon">🏃‍♀️</span>
-                  {exercise}
+                <div key={index} className="exercise-card bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200 mb-3">
+                  <div className="flex items-start space-x-3">
+                    <span className="exercise-icon text-2xl">🧘‍♀️</span>
+                    <div>
+                      <h4 className="font-semibold text-gray-800">{exercise.name}</h4>
+                      <p className="text-sm text-gray-600 mt-1">{exercise.description}</p>
+                      {exercise.duration && (
+                        <p className="text-xs text-green-600 mt-2">⏱️ {exercise.duration}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))
             ) : (
-              <div className="exercise-card">
-                <span className="exercise-icon">💪</span>
-                Exercise suggestions will appear here to help you feel better
+              <div className="empty-state text-center py-8">
+                <p className="text-gray-600 mb-4">💪 Mindful movement ideas will appear here</p>
+                <p className="text-sm text-gray-500">Tell me how you're feeling to get personalized exercise suggestions</p>
               </div>
             )}
           </div>
@@ -131,15 +159,26 @@ const SuggestionSection = ({ suggestions, recommendations }) => {
           <div className="food-panel">
             {recommendations?.nutrition?.length > 0 ? (
               recommendations.nutrition.map((food, index) => (
-                <div key={index} className="food-card">
-                  <span className="food-icon">🍎</span>
-                  {food}
+                <div key={index} className="food-card bg-gradient-to-r from-orange-50 to-amber-50 p-4 rounded-lg border border-orange-200 mb-3">
+                  <div className="flex items-start space-x-3">
+                    <span className="food-icon text-2xl">🥗</span>
+                    <div>
+                      <h4 className="font-semibold text-gray-800">{food.name}</h4>
+                      <p className="text-sm text-gray-600 mt-1">{food.benefit}</p>
+                      {food.timing && (
+                        <p className="text-xs text-orange-600 mt-2">⏰ Best time: {food.timing}</p>
+                      )}
+                      {food.examples && (
+                        <p className="text-xs text-gray-500 mt-1">Examples: {food.examples}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))
             ) : (
-              <div className="food-card">
-                <span className="food-icon">🥗</span>
-                Nutrition suggestions will appear here to support your wellbeing
+              <div className="empty-state text-center py-8">
+                <p className="text-gray-600 mb-4">🍎 Nourishing suggestions will appear here</p>
+                <p className="text-sm text-gray-500">Share more about your day to get personalized nutrition ideas</p>
               </div>
             )}
           </div>
@@ -149,15 +188,24 @@ const SuggestionSection = ({ suggestions, recommendations }) => {
           <div className="trips-panel">
             {recommendations?.activities?.length > 0 ? (
               recommendations.activities.map((activity, index) => (
-                <div key={index} className="activity-card">
-                  <span className="activity-icon">🌟</span>
-                  {activity}
+                <div key={index} className="activity-card bg-gradient-to-r from-cyan-50 to-blue-50 p-4 rounded-lg border border-cyan-200 mb-3">
+                  <div className="flex items-start space-x-3">
+                    <span className="activity-icon text-2xl">🌟</span>
+                    <div>
+                      <h4 className="font-semibold text-gray-800">{activity.name}</h4>
+                      <p className="text-sm text-gray-600 mt-1">{activity.description}</p>
+                      <div className="flex items-center space-x-4 mt-2 text-xs">
+                        {activity.duration && <span className="text-cyan-600">⏱️ {activity.duration}</span>}
+                        {activity.benefit && <span className="text-gray-500">💝 {activity.benefit}</span>}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))
             ) : (
-              <div className="activity-card">
-                <span className="activity-icon">🎈</span>
-                Activity ideas will appear here to brighten your day
+              <div className="empty-state text-center py-8">
+                <p className="text-gray-600 mb-4">🎈 Peaceful activities will appear here</p>
+                <p className="text-sm text-gray-500">Continue sharing to discover activities that might lift your spirits</p>
               </div>
             )}
           </div>
@@ -167,15 +215,17 @@ const SuggestionSection = ({ suggestions, recommendations }) => {
           <div className="links-panel">
             {recommendations?.resources?.length > 0 ? (
               recommendations.resources.map((resource, index) => (
-                <div key={index} className="link-card">
-                  <span className="action-bullet">🔗</span>
-                  {resource}
+                <div key={index} className="link-card bg-gradient-to-r from-red-50 to-pink-50 p-4 rounded-lg border border-red-200 mb-3">
+                  <div className="flex items-start space-x-3">
+                    <span className="text-xl">🔗</span>
+                    <p className="text-sm text-gray-700">{resource}</p>
+                  </div>
                 </div>
               ))
             ) : (
-              <div className="link-card">
-                <span className="action-bullet">💙</span>
-                Support resources will appear here after our conversation
+              <div className="empty-state text-center py-8">
+                <p className="text-gray-600 mb-4">💙 Support resources will appear here</p>
+                <p className="text-sm text-gray-500">Professional support links will be provided when helpful</p>
               </div>
             )}
           </div>
