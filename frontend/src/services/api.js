@@ -40,7 +40,7 @@ export async function analyzeText(text) {
     
     return data;
   } catch (error) {
-    console.error("🚨 Error calling backend:", error);
+    console.error("🚨 Backend unavailable, using offline mode:", error.message);
     
     // Rich fallback response with depth and context per copilot instructions
     return generateContextualFallback(text);
@@ -51,14 +51,21 @@ function generateContextualFallback(text) {
   const textLower = text.toLowerCase();
   
   // Analyze text for context
-  let supportive_message = "Thank you for sharing what's on your mind with me. I can tell there's depth to what you're experiencing.";
+  let supportive_message = "Thank you for sharing what's on your mind with me. I can tell there's depth to what you're experiencing. (Note: Running in offline mode)";
   let suggested_next_steps = [];
   let helpful_resources = [];
   let probs = { neutral: 0.8, optimism: 0.2 };
+  let recommendations = {
+    activities: [],
+    books: [],
+    movies: [],
+    nutrition: [],
+    resources: []
+  };
   
   // Contextual responses based on keywords
   if (textLower.includes('anxious') || textLower.includes('worry') || textLower.includes('stress')) {
-    supportive_message = "I can hear the anxiety in what you're sharing. Feeling anxious is completely natural, and you're not alone in this. It takes courage to acknowledge these feelings.";
+    supportive_message = "I can hear the anxiety in what you're sharing. Feeling anxious is completely natural, and you're not alone in this. It takes courage to acknowledge these feelings. (Running in offline mode)";
     probs = { anxiety: 0.7, fear: 0.2, neutral: 0.1 };
     suggested_next_steps = [
       "Practice the 4-7-8 breathing technique to calm your nervous system",
@@ -66,8 +73,26 @@ function generateContextualFallback(text) {
       "Consider writing down your worries to externalize anxious thoughts",
       "Take a gentle walk outside if possible to change your environment"
     ];
+    recommendations = {
+      activities: [
+        { name: "Breathing Exercise", description: "4-7-8 breathing technique", duration: "5 minutes" },
+        { name: "Mindful Walking", description: "Gentle outdoor walk", duration: "15 minutes" }
+      ],
+      books: [
+        { title: "The Anxiety and Worry Workbook", author: "David A. Clark" },
+        { title: "Dare: The New Way to End Anxiety", author: "Barry McDonagh" }
+      ],
+      movies: [
+        { title: "Inside Out", description: "Understanding emotions", mood: "calming" }
+      ],
+      nutrition: [
+        { name: "Chamomile Tea", benefit: "Natural calming effects" },
+        { name: "Dark Chocolate", benefit: "Stress reduction" }
+      ],
+      resources: []
+    };
   } else if (textLower.includes('sad') || textLower.includes('down') || textLower.includes('depressed')) {
-    supportive_message = "I can sense the heaviness in your words. Sadness is a valid emotion that deserves space to be felt and processed. You're taking a brave step by reaching out.";
+    supportive_message = "I can sense the heaviness in your words. Sadness is a valid emotion that deserves space to be felt and processed. You're taking a brave step by reaching out. (Running in offline mode)";
     probs = { sadness: 0.8, neutral: 0.2 };
     suggested_next_steps = [
       "Allow yourself to feel this sadness without judgment - emotions need space",
@@ -75,8 +100,26 @@ function generateContextualFallback(text) {
       "Reach out to someone you trust when you feel ready",
       "Practice self-compassion by treating yourself with kindness"
     ];
+    recommendations = {
+      activities: [
+        { name: "Gentle Stretching", description: "Slow, mindful movement", duration: "10 minutes" },
+        { name: "Journaling", description: "Express your feelings on paper", duration: "15 minutes" }
+      ],
+      books: [
+        { title: "The Upward Spiral", author: "Alex Korb" },
+        { title: "Feeling Good", author: "David D. Burns" }
+      ],
+      movies: [
+        { title: "The Pursuit of Happyness", description: "Hope and resilience", mood: "uplifting" }
+      ],
+      nutrition: [
+        { name: "Omega-3 Rich Foods", benefit: "Mood support" },
+        { name: "Warm Soup", benefit: "Comfort and nourishment" }
+      ],
+      resources: []
+    };
   } else if (textLower.includes('angry') || textLower.includes('frustrated') || textLower.includes('mad')) {
-    supportive_message = "I can feel the intensity of your frustration. Anger is often our heart's way of saying 'this matters to me.' Your feelings are completely valid.";
+    supportive_message = "I can feel the intensity of your frustration. Anger is often our heart's way of saying 'this matters to me.' Your feelings are completely valid. (Running in offline mode)";
     probs = { anger: 0.7, frustration: 0.2, neutral: 0.1 };
     suggested_next_steps = [
       "Channel this energy through physical activity like walking or exercise",
@@ -84,8 +127,26 @@ function generateContextualFallback(text) {
       "Practice deep breathing to help manage the intensity",
       "Consider what boundary or change might address the source of anger"
     ];
+    recommendations = {
+      activities: [
+        { name: "Physical Exercise", description: "Channel energy positively", duration: "20 minutes" },
+        { name: "Anger Journaling", description: "Write freely without editing", duration: "10 minutes" }
+      ],
+      books: [
+        { title: "The Dance of Anger", author: "Harriet Lerner" },
+        { title: "Anger: Wisdom for Cooling the Flames", author: "Thich Nhat Hanh" }
+      ],
+      movies: [
+        { title: "Inside Out", description: "Understanding emotions", mood: "educational" }
+      ],
+      nutrition: [
+        { name: "Green Tea", benefit: "Calming properties" },
+        { name: "Complex Carbohydrates", benefit: "Mood stabilization" }
+      ],
+      resources: []
+    };
   } else if (textLower.includes('overwhelmed') || textLower.includes('too much')) {
-    supportive_message = "It sounds like you're carrying a lot right now. Feeling overwhelmed makes complete sense when life feels like too much all at once. You're handling more than anyone should manage alone.";
+    supportive_message = "It sounds like you're carrying a lot right now. Feeling overwhelmed makes complete sense when life feels like too much all at once. You're handling more than anyone should manage alone. (Running in offline mode)";
     probs = { overwhelmed: 0.6, anxiety: 0.3, neutral: 0.1 };
     suggested_next_steps = [
       "Break down overwhelming tasks into smaller, manageable steps",
@@ -93,6 +154,24 @@ function generateContextualFallback(text) {
       "Set aside 10 minutes for deep breathing or meditation",
       "Ask for help with specific tasks if possible"
     ];
+    recommendations = {
+      activities: [
+        { name: "Task Breakdown", description: "Make a manageable to-do list", duration: "10 minutes" },
+        { name: "Meditation", description: "Simple breathing meditation", duration: "10 minutes" }
+      ],
+      books: [
+        { title: "Getting Things Done", author: "David Allen" },
+        { title: "The Power of Now", author: "Eckhart Tolle" }
+      ],
+      movies: [
+        { title: "Julie & Julia", description: "Taking things one step at a time", mood: "inspiring" }
+      ],
+      nutrition: [
+        { name: "Herbal Tea", benefit: "Calming ritual" },
+        { name: "Balanced Meals", benefit: "Sustained energy" }
+      ],
+      resources: []
+    };
   } else {
     suggested_next_steps = [
       "Take a few moments to check in with your body and breath",
@@ -100,6 +179,22 @@ function generateContextualFallback(text) {
       "Practice mindful awareness of your current feelings",
       "Engage in an activity that usually brings you peace"
     ];
+    recommendations = {
+      activities: [
+        { name: "Mindful Check-in", description: "Body and breath awareness", duration: "5 minutes" },
+        { name: "Comfort Activity", description: "Something that brings you peace", duration: "15 minutes" }
+      ],
+      books: [
+        { title: "The Gifts of Imperfection", author: "Brené Brown" }
+      ],
+      movies: [
+        { title: "Studio Ghibli Films", description: "Peaceful and calming", mood: "serene" }
+      ],
+      nutrition: [
+        { name: "Mindful Eating", benefit: "Present moment awareness" }
+      ],
+      resources: []
+    };
   }
   
   // Always include supportive resources per copilot instructions contract
@@ -114,7 +209,8 @@ function generateContextualFallback(text) {
     risk: 'SAFE',
     supportive_message,
     suggested_next_steps,
-    helpful_resources
+    helpful_resources,
+    recommendations
   };
 }
 

@@ -7,6 +7,7 @@ import EarlyWarningDashboard from './components/EarlyWarningDashboard';
 import TestingDashboard from './components/TestingDashboard';
 import SuggestionSection from './components/SuggestionSection';
 import CompanionChatInput from './components/CompanionChatInput';
+import { analyzeText } from './services/api.js';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -195,16 +196,7 @@ function App() {
     setLoading(true);
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/analyze`, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "X-User-Profile": JSON.stringify(userProfile)
-        },
-        body: JSON.stringify({ text }),
-      });
-
-      const data = await res.json();
+      const data = await analyzeText(text);
       
       // Update progress tracking
       if (data.probs) {
