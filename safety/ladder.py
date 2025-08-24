@@ -55,3 +55,43 @@ def get_random_suggestions(risk: str, count: int = 3) -> List[str]:
     actions = ACTIONS.get(risk, ACTIONS["SAFE"])
     return random.sample(actions, min(count, len(actions)))
 
+def get_actions_for_risk(risk_level: str) -> List[str]:
+    """Get action suggestions for a specific risk level"""
+    # Map assessor risk levels to ladder risk levels
+    risk_mapping = {
+        "SAFE": "SAFE",
+        "LOW": "LOW", 
+        "MODERATE": "MODERATE",
+        "HIGH": "HIGH",
+        "CRISIS": "CRISIS"
+    }
+    
+    mapped_risk = risk_mapping.get(risk_level, "SAFE")
+    return ACTIONS.get(mapped_risk, ACTIONS["SAFE"])
+
+def get_supportive_resources() -> List[str]:
+    """Get general supportive resources"""
+    return [
+        "National Suicide Prevention Lifeline: 988",
+        "Crisis Text Line: Text HOME to 741741", 
+        "SAMHSA National Helpline: 1-800-662-4357",
+        "National Alliance on Mental Illness: nami.org",
+        "Mental Health America: mhanational.org",
+        "BetterHelp Online Therapy: betterhelp.com",
+        "Psychology Today Therapist Directory: psychologytoday.com",
+        "Headspace Meditation App: headspace.com"
+    ]
+
+def get_escalation_resources() -> List[str]:
+    """Get emergency resources for high-risk situations"""
+    return [
+        "Emergency Services: 911",
+        "National Suicide Prevention Lifeline: 988",
+        "Crisis Text Line: Text HOME to 741741",
+        "National Sexual Assault Hotline: 1-800-656-4673",
+        "National Domestic Violence Hotline: 1-800-799-7233",
+        "Veterans Crisis Line: 1-800-273-8255",
+        "Trans Lifeline: 877-565-8860",
+        "TrevorLifeline (LGBTQ): 1-866-488-7386"
+    ]
+

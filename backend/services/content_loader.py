@@ -24,7 +24,7 @@ class ContentLoader:
         except FileNotFoundError:
             return {}
     
-    def get_content_by_risk(self, content_type: str, risk_level: str) -> List[Dict]:
+    def get_content_by_risk(self, content_type: str, risk_level: str) -> List:
         content_map = {
             'quotes': self.quotes,
             'movies': self.movies,
