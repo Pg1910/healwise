@@ -1,0 +1,32 @@
+# Ignore backend and all Python files
+backend/
+*.py
+__pycache__/
+.venv/
+venv/
+*.pyc
+requirements.txt
+Procfile
+runtime.txt
+railway.toml
+build.sh
+
+# Ignore other unnecessary files
+.pytest_cache/
+tests/
+*.md
+check_links.py
+comprehensive_test.py
+conftest.py
+conversations.json
+debug_recommendations.py
+diagnose.py
+mistral_test.py
+pytest.ini
+run_backend.py
+test_*.py
+therapy_outputs.py
+privacy/
+safety/
+kb/
+utils/
