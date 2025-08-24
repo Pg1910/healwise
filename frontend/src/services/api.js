@@ -1,7 +1,7 @@
 // frontend/src/services/api.js
 
 const API_BASE_URL = import.meta.env.PROD 
-  ? 'https://healwise-backend.railway.app'  
+  ? '/api'  // Use Vercel functions
   : 'http://localhost:8000';
 
 export async function analyzeText(text) {
