@@ -4,6 +4,9 @@ const MISTRAL_API_BASE = 'http://localhost:11434/api/generate';
 export async function analyzeWithMistral(userText, conversationHistory = []) {
   console.log('🧠 Enhanced analysis started with Mistral...');
   
+  // Add artificial delay to simulate thinking
+  await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+  
   try {
     // First try Mistral for deep analysis
     const mistralResponse = await callMistralAPI(userText, conversationHistory);
@@ -128,51 +131,153 @@ function generateEnhancedLocalAnalysis(userText, conversationHistory = []) {
 function generateContextualResponse(userText, emotions, primaryEmotion, conversationHistory) {
   const textLower = userText.toLowerCase();
   const isFirstMessage = conversationHistory.length === 0;
+  const messageCount = conversationHistory.length;
+  
+  // Add randomization to prevent repetitive responses
+  const getRandomFromArray = (arr) => arr[Math.floor(Math.random() * arr.length)];
   
   let message, steps, questions;
   
   if (textLower.includes('lonely') || textLower.includes('alone') || textLower.includes('isolated')) {
-    message = isFirstMessage 
-      ? `I can really hear the loneliness in what you've shared, and I want you to know that reaching out like this shows so much courage. Loneliness can feel like you're on an island, surrounded by people but still feeling disconnected. It's one of the most human experiences, yet it can feel so isolating.
+    const lonelinessResponses = [
+      {
+        initial: `I can really hear the loneliness in what you've shared, and I want you to know that reaching out like this shows so much courage. Loneliness can feel like you're on an island, surrounded by people but still feeling disconnected. It's one of the most human experiences, yet it can feel so isolating.
 
-The fact that you're here, sharing this with me, tells me you're looking for connection - and that's a beautiful, brave thing. Loneliness often isn't just about being alone; it's about feeling unseen or misunderstood.
+The fact that you're here, sharing this with me, tells me you're looking for connection - and that's a beautiful, brave thing. Can you tell me more about what the loneliness feels like for you? Is it that you're physically alone, or is it more about feeling disconnected even when others are around?`,
+        followUp: `The loneliness you're describing sounds really profound. It takes a lot of strength to keep reaching out when you're feeling this disconnected.
 
-Can you tell me more about what the loneliness feels like for you? Is it that you're physically alone, or is it more about feeling disconnected even when others are around?`
-      : `The loneliness you're describing sounds really profound. It takes a lot of strength to keep reaching out when you're feeling this disconnected.
+I'm wondering - when you think about the loneliness, what do you miss most? Is it having someone who really gets you, or is it more about having people around, or something else entirely?`
+      },
+      {
+        initial: `Loneliness has such a unique ache, doesn't it? It's like being hungry for connection, for understanding, for someone to truly see you. I'm really glad you chose to share this with me because that tells me you haven't given up on connection entirely.
 
-I'm wondering - when you think about the loneliness, what do you miss most? Is it having someone who really gets you, or is it more about having people around, or something else entirely?`;
-    
-    steps = [
-      "Write a letter to yourself from the perspective of a loving friend - what would they say to you right now?",
-      "Take a gentle walk in a public space like a park or café, just to be around the energy of others without pressure",
-      "Reach out to one person you haven't talked to in a while, even if it's just to say hello",
-      "Consider joining an online community or local group that shares one of your interests"
+What I'm curious about is how this loneliness shows up in your day-to-day life. Do you find yourself craving deeper conversations, or is it more about wanting companionship for simple moments?`,
+        followUp: `I can feel how deeply this loneliness is affecting you. It sounds like you're carrying this feeling pretty consistently.
+
+What would it look like if you felt less alone? I don't mean what should happen, but what would you actually feel or experience differently?`
+      },
+      {
+        initial: `There's something so brave about naming loneliness out loud. It's one of those feelings that can make us feel ashamed, like something is wrong with us, when really it's just a very human signal that we need connection.
+
+I'm struck by the fact that you're here, reaching out. Even in feeling alone, you're taking action toward connection. What's it been like for you to carry this feeling? Has it been building up gradually, or did something specific shift recently?`,
+        followUp: `The isolation you're describing sounds really heavy to carry. I imagine it touches many parts of your life.
+
+When you think about the people in your life - are there any who you feel like you could reach toward, even if it feels scary or uncertain?`
+      }
     ];
-    
-    questions = [
-      "What does connection mean to you right now? What would it look like?",
-      "Are there people in your life who care about you, even if they feel distant right now?"
+
+    const stepOptions = [
+      [
+        "Write a letter to yourself from the perspective of a loving friend - what would they say to you right now?",
+        "Take a gentle walk in a public space like a park or café, just to be around the energy of others without pressure",
+        "Reach out to one person you haven't talked to in a while, even if it's just to say hello",
+        "Consider joining an online community or local group that shares one of your interests"
+      ],
+      [
+        "Set up a video call with someone you trust, even if it's just for 10 minutes",
+        "Visit a local library, bookstore, or coffee shop where you can be around people peacefully",
+        "Write in a journal about what connection means to you and what you're seeking",
+        "Join a virtual event or online workshop related to something you enjoy"
+      ],
+      [
+        "Send a text to someone just to check in on them - sometimes giving connection helps us receive it",
+        "Spend time in nature where you might encounter others - parks, hiking trails, community gardens",
+        "Look into local meetups, classes, or volunteer opportunities that align with your interests",
+        "Practice self-compassion by treating yourself with the same kindness you'd give a lonely friend"
+      ]
     ];
+
+    const questionOptions = [
+      [
+        "What does connection mean to you right now? What would it look like?",
+        "Are there people in your life who care about you, even if they feel distant right now?"
+      ],
+      [
+        "When was the last time you felt truly seen and understood by someone?",
+        "What's one small step toward connection that feels possible for you today?"
+      ],
+      [
+        "If you could have any kind of conversation right now, what would you want to talk about?",
+        "What stops you from reaching out to people you know care about you?"
+      ]
+    ];
+
+    const responseIndex = messageCount % lonelinessResponses.length;
+    const selectedResponse = lonelinessResponses[responseIndex];
+    
+    message = isFirstMessage ? selectedResponse.initial : selectedResponse.followUp;
+    steps = stepOptions[responseIndex];
+    questions = questionOptions[responseIndex];
   } else if (textLower.includes('anxious') || textLower.includes('anxiety') || textLower.includes('worry')) {
-    message = isFirstMessage 
-      ? `I can sense the weight of anxiety in your words. It takes real courage to reach out when you're feeling this way. Anxiety can feel overwhelming, like your mind is racing with worries that seem bigger than you can handle. I want you to know that what you're experiencing is valid, and you're not alone in feeling this way.
+    const anxietyResponses = [
+      {
+        initial: `I can sense the weight of anxiety in your words. It takes real courage to reach out when you're feeling this way. Anxiety can feel overwhelming, like your mind is racing with worries that seem bigger than you can handle. I want you to know that what you're experiencing is valid, and you're not alone in feeling this way.
 
-Can you tell me more about what's been triggering these anxious feelings lately? Sometimes it helps to explore what specific situations or thoughts are feeding the anxiety.`
-      : `I'm hearing the anxiety continuing in what you've shared. It sounds like this feeling is really persistent for you right now. That must be exhausting to carry.
+Can you tell me more about what's been triggering these anxious feelings lately? Sometimes it helps to explore what specific situations or thoughts are feeding the anxiety.`,
+        followUp: `I'm hearing the anxiety continuing in what you've shared. It sounds like this feeling is really persistent for you right now. That must be exhausting to carry.
 
-What does the anxiety feel like in your body right now? Are you noticing it more in certain situations, or does it feel like it's with you most of the time?`;
-    
-    steps = [
-      "Try the 4-7-8 breathing technique: breathe in for 4, hold for 7, out for 8 - repeat 4 times",
-      "Use the 5-4-3-2-1 grounding technique: name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste",
-      "Write down your anxious thoughts on paper to externalize them from your mind",
-      "Take a 10-minute walk outside if possible, focusing on your surroundings rather than your thoughts"
+What does the anxiety feel like in your body right now? Are you noticing it more in certain situations, or does it feel like it's with you most of the time?`
+      },
+      {
+        initial: `Anxiety can feel like your nervous system is constantly on high alert, can't it? Like you're bracing for something but you're not sure what. The mental energy that takes is enormous. I'm really glad you're here talking about it instead of trying to push through it alone.
+
+What's been on your mind most lately? Sometimes anxiety clusters around specific worries, and sometimes it feels more like a general sense of unease.`,
+        followUp: `It sounds like the anxiety is really taking up a lot of space in your experience right now. That hypervigilance can be so draining.
+
+I'm curious - are there moments when the anxiety feels a little quieter, or does it feel pretty constant? Sometimes noticing the fluctuations can give us clues about what helps.`
+      },
+      {
+        initial: `There's something about anxiety that can make you feel like you're living in your head, spinning with worries and what-ifs. It's like your mind is trying to solve problems that haven't even happened yet. The fact that you're reaching out tells me you're looking for some relief from that mental storm.
+
+What's it like inside your head when the anxiety is strongest? Are there particular thoughts or scenarios that your mind keeps returning to?`,
+        followUp: `The anxiety you're describing sounds really intense and persistent. It's like your nervous system won't let you rest.
+
+What have you noticed helps, even a little bit? It could be anything - a person, a place, an activity, even just a moment when things felt slightly calmer.`
+      }
     ];
-    
-    questions = [
-      "What time of day do you notice the anxiety feels strongest?",
-      "Are there any activities or places where the anxiety feels less intense?"
+
+    const stepOptions = [
+      [
+        "Try the 4-7-8 breathing technique: breathe in for 4, hold for 7, out for 8 - repeat 4 times",
+        "Use the 5-4-3-2-1 grounding technique: name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste",
+        "Write down your anxious thoughts on paper to externalize them from your mind",
+        "Take a 10-minute walk outside if possible, focusing on your surroundings rather than your thoughts"
+      ],
+      [
+        "Set a timer for 5 minutes of deep belly breathing - place one hand on chest, one on belly",
+        "Try progressive muscle relaxation: tense and release each muscle group for 5 seconds",
+        "Create an 'anxiety playlist' of calming music or sounds that help ground you",
+        "Practice the 'STOP' technique: Stop, Take a breath, Observe your thoughts, Proceed mindfully"
+      ],
+      [
+        "Use cold water on your wrists or splash your face to activate your vagus nerve",
+        "Try the 'worry window' technique: schedule 15 minutes to worry, then redirect when anxiety comes up",
+        "Engage your senses with something textured, scented, or soothing to touch",
+        "Do gentle stretching or yoga poses that open your chest and release tension"
+      ]
     ];
+
+    const questionOptions = [
+      [
+        "What time of day do you notice the anxiety feels strongest?",
+        "Are there any activities or places where the anxiety feels less intense?"
+      ],
+      [
+        "When you think about what's making you anxious, what feels most out of control?",
+        "Are there people in your life who help you feel calmer, even just by being around?"
+      ],
+      [
+        "If the anxiety could speak, what do you think it would be trying to protect you from?",
+        "What would it feel like to have just 10 minutes without that anxious feeling?"
+      ]
+    ];
+
+    const responseIndex = messageCount % anxietyResponses.length;
+    const selectedResponse = anxietyResponses[responseIndex];
+    
+    message = isFirstMessage ? selectedResponse.initial : selectedResponse.followUp;
+    steps = stepOptions[responseIndex];
+    questions = questionOptions[responseIndex];
   } else if (textLower.includes('sad') || textLower.includes('depression') || textLower.includes('down')) {
     message = isFirstMessage
       ? `I can feel the heaviness in what you've shared with me. Depression and sadness can make everything feel harder, like you're moving through thick fog where even simple things require enormous effort. Your feelings are completely valid, and I want you to know that reaching out like this shows incredible strength, even when you might not feel strong at all.
@@ -230,29 +335,80 @@ What do you think your anger is trying to tell you? Is it pointing to something 
     ];
     
     questions = [
-      "What feels most unfair or frustrating about your current situation?",
-      "If you could change one thing that's making you angry, what would it be?"
-    ];
-  } else {
-    message = isFirstMessage
-      ? `Thank you for sharing what's on your mind with me. I can tell there's something weighing on you, and I want you to know that whatever you're experiencing matters. Sometimes it's hard to put feelings into words, and that's okay too.
-
-I'm here to listen and understand better. Would you feel comfortable sharing more about what brought you here today? What's been on your heart or mind lately?`
-      : `I'm continuing to listen and want to understand your experience more deeply. Every feeling and thought you share helps me better support you through whatever you're going through.
-
-What feels most important for you to talk about right now? Is there something specific that's been weighing on your mind?`;
-    
-    steps = [
-      "Take three deep breaths and notice what you're feeling in your body right now",
-      "Consider what one small thing might bring you a moment of peace today",
-      "Practice gentle self-compassion by speaking to yourself as you would a good friend",
-      "Engage in one activity that usually helps you feel grounded or centered"
-    ];
-    
-    questions = [
       "What's one thing that's been on your mind that you haven't been able to share with anyone?",
       "How have you been taking care of yourself lately?"
     ];
+  } else {
+    // Generic responses with variety for any other content
+    const genericResponses = [
+      {
+        initial: `Thank you for sharing what's on your mind with me. I can tell there's something weighing on you, and I want you to know that whatever you're experiencing matters. Sometimes it's hard to put feelings into words, and that's okay too.
+
+I'm here to listen and understand better. Would you feel comfortable sharing more about what brought you here today? What's been on your heart or mind lately?`,
+        followUp: `I'm continuing to listen and want to understand your experience more deeply. Every feeling and thought you share helps me better support you through whatever you're going through.
+
+What feels most important for you to talk about right now? Is there something specific that's been weighing on your mind?`
+      },
+      {
+        initial: `I'm really glad you chose to share with me today. There's something in what you've said that tells me you're processing something important. It takes courage to reach out, even when you're not sure exactly what you need.
+
+What's been sitting with you lately? Sometimes just having space to think out loud can help us understand our own thoughts and feelings better.`,
+        followUp: `I can sense there's more you're working through. It sounds like you're in a space of reflection or maybe some uncertainty about something.
+
+What would feel most helpful to explore right now? Are you looking to understand something better, or maybe just need someone to listen?`
+      },
+      {
+        initial: `Thank you for trusting me with whatever is on your mind right now. Even if you're not sure exactly how to put it into words, the fact that you're here means something important to you is asking for attention.
+
+I'm curious about what's been occupying your thoughts recently. What brought you here today?`,
+        followUp: `I'm hearing that there's something you're working through, and I want to make sure I'm understanding you as clearly as possible.
+
+What aspect of what you're experiencing feels most significant to you right now? Sometimes talking through different angles can help clarify things.`
+      }
+    ];
+
+    const stepOptions = [
+      [
+        "Take three deep breaths and notice what you're feeling in your body right now",
+        "Consider what one small thing might bring you a moment of peace today",
+        "Practice gentle self-compassion by speaking to yourself as you would a good friend",
+        "Engage in one activity that usually helps you feel grounded or centered"
+      ],
+      [
+        "Spend a few minutes writing freely about whatever is on your mind, without editing",
+        "Take a mindful moment to notice your surroundings and what you can see, hear, and feel",
+        "Do something kind for yourself today, however small",
+        "Reach out to someone who makes you feel understood, even just to say hello"
+      ],
+      [
+        "Set aside 10 minutes to sit quietly and just be with whatever you're feeling",
+        "Go for a walk and let your mind wander without trying to solve anything",
+        "Create something - draw, write, make music, or work with your hands",
+        "Practice one small act of self-care that feels nurturing right now"
+      ]
+    ];
+
+    const questionOptions = [
+      [
+        "What's one thing that's been on your mind that you haven't been able to share with anyone?",
+        "How have you been taking care of yourself lately?"
+      ],
+      [
+        "If you could change one thing about how you're feeling right now, what would it be?",
+        "What does support look like for you when you're working through something?"
+      ],
+      [
+        "What would it feel like to feel completely understood right now?",
+        "Is there something you wish someone would ask you about?"
+      ]
+    ];
+
+    const responseIndex = messageCount % genericResponses.length;
+    const selectedResponse = genericResponses[responseIndex];
+    
+    message = isFirstMessage ? selectedResponse.initial : selectedResponse.followUp;
+    steps = stepOptions[responseIndex];
+    questions = questionOptions[responseIndex];
   }
   
   return { message, steps, questions };
